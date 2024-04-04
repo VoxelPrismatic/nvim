@@ -76,7 +76,6 @@ return {
     {
         "williamboman/mason.nvim",
         name = "mason",
-        lazy = false,
         config = function()
             require("mason").setup()
         end,
@@ -84,7 +83,6 @@ return {
     {
         "williamboman/mason-lspconfig.nvim",
         name = "mason-lspconfig",
-        lazy = false,
         config = function()
             local lsp = require("mason-lspconfig")
             lsp.setup({
@@ -103,6 +101,8 @@ return {
     },
     {
         "neovim/nvim-lspconfig",
-        lazy = false,
+    },
+    {
+        "stevearc/conform.nvim",
     },
 }

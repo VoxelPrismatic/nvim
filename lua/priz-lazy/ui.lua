@@ -2,7 +2,6 @@ return {
     -- Code folding
     {
         "kevinhwang91/nvim-ufo",
-        lazy = false,
         dependencies = {
             'kevinhwang91/promise-async',
         },
@@ -27,15 +26,12 @@ return {
     -- Also code folding
     {
         "nvim-treesitter/nvim-treesitter",
-    },
-
-    -- Show trailing whitespaces (deleted on save)
-    {
-        "johnfrankmorgan/whitespace.nvim",
-        config = function ()
-            require("whitespace-nvim").setup({
-                highlight = "DiffDelete",
-                ignored_filetypes = { "TelescopePrompt", "Trouble", "Help" },
+        config = function()
+            require("nvim-treesitter.configs").setup({
+                auto_install = true,
+                indent = {
+                    enable = true,
+                },
             })
         end,
     },
@@ -44,36 +40,34 @@ return {
     {
         "ryanoasis/vim-devicons",
         name = "nvim-web-devicons",
-        lazy = false,
     },
 
     -- Status line
     {
         "nvim-lualine/lualine.nvim",
         name = "lualine",
-        lazy = false,
         config = function()
             local lualine = require("lualine")
             lualine.setup({
                 options = {
                     theme = "catppuccin-frappe",
-                    section_separators = { 
-                        left = "", 
-                        right = "" 
+                    section_separators = {
+                        left = "",
+                        right = ""
                     },
-                    component_separators = { 
-                        left = "", 
-                        right = "" 
+                    component_separators = {
+                        left = "",
+                        right = ""
                     },
                     icons_enabled = true,
                 },
                 sections = {
-                    lualine_a = { 
+                    lualine_a = {
                         {
                             "mode",
                             icons_enabled = true,
                             icon = "",
-                        }, 
+                        },
                     },
 
                     lualine_y = {
@@ -83,7 +77,7 @@ return {
                         end,
                     },
 
-                    lualine_c = { 
+                    lualine_c = {
                         {
                             "filetype",
                             icons_enabled = true,
@@ -91,7 +85,7 @@ return {
                             colored = true,
                             icon = { align = "left" },
                             separator = "",
-                        }, 
+                        },
                         {
                             "filename",
                             separator = "",
@@ -151,7 +145,6 @@ return {
     -- File tree
     {
         "nvim-tree/nvim-tree.lua",
-        lazy = false,
         config = function()
             local api = require("nvim-tree.api")
             local function opts(desc)
