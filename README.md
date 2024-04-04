@@ -24,8 +24,8 @@ My custom neovim flavor
     - disabled the following in python:
       - max line length = 120
       - E251 - spaces around `=` by keyword
-      - W293 - trailing spaces (fixed 
-      - 
+      - W293 - trailing spaces (auto deleted)
+      - W391 - blank line at end of file
   - code completion via nvim-cmp
 - keys.lua
   - `<Home>` now toggles between start of line and start of code (like in [Kate](https://kate-editor.org))
@@ -50,3 +50,4 @@ My custom neovim flavor
   - folke whichkey
   - indent markings with indent-blankline
   - additional symbols with gitsigns
+  - trailing spaces too
