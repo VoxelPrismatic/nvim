@@ -1,2 +1,52 @@
 # nvim
 My custom neovim flavor
+
+### Includes
+- init.lua
+  - QOL things, like relative line numbers and better line wrap
+  - Lazy.nvim
+  - System clipboard
+- colors.lua
+  - catppuccin-latte
+- other init.lua
+  - copilot
+  - autopairs (possibly will be removed)
+  - telescope + plenary
+    - `<leader>t` --> `:Telescope find_files`
+  - telescope fzf
+  - comments
+    - `<leader>/` --> comment line
+    - `<leader>]` --> comment block
+  - undo tree
+    - `<leader>u` --> `:UndotreeToggle`
+- lsp.lua
+  - mason
+    - disabled the following in python:
+      - max line length = 120
+      - E251 - spaces around `=` by keyword
+      - W293 - trailing spaces (fixed 
+      - 
+  - code completion via nvim-cmp
+- keys.lua
+  - `<Home>` now toggles between start of line and start of code (like in [Kate](https://kate-editor.org))
+  - `<leader>b` - New buffer
+  - `<leader>c` - Close buffer
+  - `<leader>\\` - Clear highlights
+- ui.lua
+  - code folding with nvim-ufo
+  - nvim-treesitter
+  - icons with vim-devicons
+  - lualine
+    - A = Mode
+    - B = ???
+    - C = Filename
+    - X = LSP errors
+    - Y = LSP
+    - Z = line/ttl:col
+  - bufferline
+  - nvim-tree
+  - scroll bar with nvim-scrollview
+  - colorizer with nvim-colorizer
+  - folke whichkey
+  - indent markings with indent-blankline
+  - additional symbols with gitsigns
