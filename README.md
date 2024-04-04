@@ -1,6 +1,20 @@
 # nvim
 My custom neovim flavor
 
+# install
+```sh
+rm -rdf ~/.config/nvim
+rm -rdf ~/.local/share/nvim
+git clone https://github.com/VoxelPrismatic/nvim ~/.config/nvim
+```
+
+# update
+```
+cd ~/.config/nvim
+git reset --hard
+git pull
+```
+
 ### Includes
 i'm too lazy to keep this list up to date, actually. just look through the files, and you'll see what it needs.
 
