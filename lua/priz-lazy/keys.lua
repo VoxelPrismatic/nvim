@@ -22,13 +22,38 @@
 vim.g.mapleader = "\\"                                                          -- Set leader key
 
 -- Open a new buffer
-vim.keymap.set("n", "<leader>b", ":enew<CR>", { desc = "New buffer", noremap = true, silent = true })
+vim.keymap.set("n", "<leader>b", ":enew<CR>", {
+    desc = "New buffer",
+    noremap = true,
+    silent = true
+})
 
 -- Close current buffer
-vim.keymap.set("n", "<leader>c", ":bd<CR>", { desc = "Close buffer", noremap = true, silent = true })
+vim.keymap.set("n", "<leader>c", ":bd<CR>", {
+    desc = "Close buffer",
+    noremap = true,
+    silent = true
+})
+
+-- Restart copilot
+vim.keymap.set("n", "<leader>r", ":Copilot restart<CR>", {
+    desc = "Restart copilot",
+    noremap = true,
+    silent = true
+})
 
 -- Clear highlights
-vim.keymap.set("n", "<leader>\\", ":noh<CR>", { desc = "Clear highlights", noremap = true, silent = true })
+vim.keymap.set("n", "<leader>\\", ":noh<CR>", {
+    desc = "Clear highlights",
+    noremap = true,
+    silent = true
+})
+
+-- Unset function keys
+for i = 1, 12 do
+    vim.keymap.set("n", "<F" .. i .. ">", "<Nop>", { noremap = true, silent = true })
+    vim.keymap.set("i", "<F" .. i .. ">", "<Nop>", { noremap = true, silent = true })
+end
 
 -- Remap home key
 ---- Behavor:
@@ -51,4 +76,19 @@ function prizkeymapToggleHome()
     end
 end
 
-return {}
+return {
+    'willothy/moveline.nvim',
+    build = 'make',
+    lazy = false,
+    config = function()
+        local moveline = require("moveline")
+        vim.keymap.set("n", "<M-k>", moveline.up)
+        vim.keymap.set("n", "<M-j>", moveline.down)
+        vim.keymap.set("n", "<C-Up>", moveline.up)
+        vim.keymap.set("n", "<C-Down>", moveline.down)
+        vim.keymap.set("v", "<M-k>", moveline.block_up)
+        vim.keymap.set("v", "<M-j>", moveline.block_down)
+        vim.keymap.set("v", "<C-Up>", moveline.block_up)
+        vim.keymap.set("v", "<C-Down>", moveline.block_down)
+    end
+}

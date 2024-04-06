@@ -6,13 +6,13 @@ return {
     },
 
     -- And in case I'm not lazy enough
-    {
+    --[[{
         "windwp/nvim-autopairs",
         event = "InsertEnter",
         config = function()
             require("nvim-autopairs").setup()
         end,
-    },
+    },--]]
 
     -- Because I'm too lazy to type the whole thing
     {
@@ -64,11 +64,11 @@ return {
     },
 
     -- Undo trees may be useful
-    {
+    --[[{
         "mbbill/undotree",
         cmd = "UndotreeToggle",
         init = function()
             vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>", { desc = "Undo tree", silent = true })
         end,
-    },
+    },--]]
 }
