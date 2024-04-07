@@ -5,14 +5,7 @@ return {
         lazy = false,
     },
 
-    -- And in case I'm not lazy enough
-    --[[{
-        "windwp/nvim-autopairs",
-        event = "InsertEnter",
-        config = function()
-            require("nvim-autopairs").setup()
-        end,
-    },--]]
+    -- No more autopairs! I find that I'm fighting with it too much
 
     -- Because I'm too lazy to type the whole thing
     {
@@ -33,7 +26,9 @@ return {
             })
         end,
         init = function()
-            vim.keymap.set("n", "<leader>t", ":Telescope find_files<CR>", { desc = "Find files", silent = true })
+            vim.keymap.set("n", "<leader>t", ":Telescope find_files<CR>", {
+                desc = "Find files", silent = true
+            })
         end,
     },
 
@@ -64,11 +59,13 @@ return {
     },
 
     -- Undo trees may be useful
-    --[[{
+    {
         "mbbill/undotree",
         cmd = "UndotreeToggle",
         init = function()
-            vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>", { desc = "Undo tree", silent = true })
+            vim.keymap.set("n", "<leader>u", ":UndotreeToggle<CR>", {
+                desc = "Undo tree", silent = true
+            })
         end,
-    },--]]
+    },--
 }

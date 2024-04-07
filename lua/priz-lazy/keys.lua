@@ -1,25 +1,8 @@
---[[ Keymaps
+-- Hide LSP warnings
+local vim = vim
 
-./lua/priz-lazy/keys.lua
-    <leader>b   -   -   -   -   -   New buffer
-    <leader>c   -   -   -   -   -   Close buffer
-    <leader>\   -   -   -   -   -   Clear highlights
-    <Home>      -   -   -   -   -   Toggle between start of line and start of code
-
-./lua/priz-lazy/init.lua
-    <leader>t   -   -   -   -   -   Find files with Telescope
-    <leader>u   -   -   -   -   -   Undo tree
-
-    <leader>/   -   -   -   -   -   Comment line
-    <leader>]   -   -   -   -   -   Comment block
-
-./lua/priz-lazy/ui.lua
-    zq   -   -   -   -   -   -   Toggle fold (za is too close to be comfortable)
-    C-[  -   -   -   -   -   -   folderUp on nvim-tree
-
---]]
-
-vim.g.mapleader = "\\"                                                          -- Set leader key
+-- Set leader key
+vim.g.mapleader = "\\"
 
 -- Open a new buffer
 vim.keymap.set("n", "<leader>b", ":enew<CR>", {
@@ -84,11 +67,7 @@ return {
         local moveline = require("moveline")
         vim.keymap.set("n", "<M-k>", moveline.up)
         vim.keymap.set("n", "<M-j>", moveline.down)
-        vim.keymap.set("n", "<C-Up>", moveline.up)
-        vim.keymap.set("n", "<C-Down>", moveline.down)
         vim.keymap.set("v", "<M-k>", moveline.block_up)
         vim.keymap.set("v", "<M-j>", moveline.block_down)
-        vim.keymap.set("v", "<C-Up>", moveline.block_up)
-        vim.keymap.set("v", "<C-Down>", moveline.block_down)
     end
 }

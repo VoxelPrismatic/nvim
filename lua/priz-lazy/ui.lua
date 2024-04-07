@@ -1,3 +1,6 @@
+-- Remove LSP warnings
+local vim = vim
+
 return {
     -- Code folding
     {
@@ -165,7 +168,7 @@ return {
                 sync_root_with_cwd = true,
                 on_attach = function(bufnr)
                     api.config.mappings.default_on_attach(bufnr)
-                    vim.keymap.set("n", "<C-[>", api.tree.change_root_to_parent, opts("Up"))
+                    vim.keymap.set("n", "<C-BS>", api.tree.change_root_to_parent, opts("Up"))
                     vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
                 end,
             })

@@ -1,3 +1,6 @@
+-- Hide LSP warnings
+local vim = vim
+
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 local _py_ignore = {
     "E251",     -- unexpected spaces around keyword / parameter equals
@@ -53,7 +56,7 @@ return {
                         -- vim.fn["vsnip#anonymous"](args.body)
                     end,
                 },
-                mapping = cmp.mapping.preset.insert({
+                mapping = {
                     ["<C-d>"] = cmp.mapping.scroll_docs(-4),
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
                     ["<C-Space>"] = cmp.mapping.complete(),
@@ -63,7 +66,7 @@ return {
                         behavior = cmp.ConfirmBehavior.Insert,
                         select = true,
                     }),
-                }),
+                },
                 sources = {
                     { name = "nvim_lsp" },
                     { name = "buffer" },
@@ -103,9 +106,6 @@ return {
         end,
     },
     {
-        "neovim/nvim-lspconfig",
-    },
-    {
         "stevearc/conform.nvim",
     },
     {
@@ -121,11 +121,6 @@ return {
                 },
             })
             vim.keymap.set("n", "<leader>?", "<cmd>Lspsaga hover_doc<CR>", {
-                desc = "Get inline documentation",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("i", "<C-\\>", "<cmd>Lspsaga hover_doc<CR>", {
                 desc = "Get inline documentation",
                 noremap = true,
                 silent = true,
