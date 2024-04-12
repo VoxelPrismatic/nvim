@@ -13,6 +13,7 @@ vim.opt.cursorline = true               -- Highlight current line
 vim.opt.list = true                     -- Show special characters
 vim.opt.listchars = {
     trail = "·",                        -- Trailing spaces
+    tab = ">\u{2014} ",
 }
 
 local _tab = 4                          -- Set tab width
