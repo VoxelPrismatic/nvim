@@ -7,6 +7,8 @@ return {
         require("catppuccin").setup({
             flavour = "latte",
             term_colors = true,
+            transparent_background = false,
+            show_end_of_buffer = true,
             dim_inactive = {
                 enabled = true,
                 shade = "light",

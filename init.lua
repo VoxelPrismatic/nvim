@@ -45,3 +45,6 @@ require("lazy").setup({
 -- Use system clipboard
 vim.opt.clipboard = "unnamedplus"
 
+-- Enables transparent background on Konsole
+vim.cmd("highlight Normal guibg=none")
+
