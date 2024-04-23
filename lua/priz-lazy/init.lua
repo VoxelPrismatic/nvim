@@ -1,8 +1,13 @@
 return {
     -- Because sometimes I'm lazy as hell
     {
-        "github/copilot.vim",
-        lazy = false,
+        "Exafunction/codeium.vim",
+        event = "BufEnter",
+    },
+
+    {
+        "ThePrimeagen/vim-be-good",
+        event = "VeryLazy",
     },
 
     -- No more autopairs! I find that I'm fighting with it too much

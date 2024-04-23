@@ -5,12 +5,12 @@ return {
     lazy = false,
     config = function()
         require("catppuccin").setup({
-            flavour = "latte",
+            flavour = "mocha",
             term_colors = true,
             transparent_background = false,
             show_end_of_buffer = true,
             dim_inactive = {
-                enabled = true,
+                enabled = false,
                 shade = "light",
             },
         })

@@ -5,16 +5,12 @@ vim.opt.number = true                   -- Show line numbers
 vim.opt.mouse = "a"                     -- enable mouse
 vim.opt.ignorecase = true               -- Ignore case when searching
 vim.opt.smartcase = true                -- Notice case when search term contains uppercase letter
-vim.opt.wrap = true                     -- Line wrapping
-vim.opt.breakindent = true              -- Line wrap on same level
-vim.opt.linebreak = true                -- Break lines at word boundaries
+vim.opt.wrap = false                    -- Line wrapping
+-- vim.opt.breakindent = true              -- Line wrap on same level
+-- vim.opt.linebreak = true                -- Break lines at word boundaries
 vim.opt.relativenumber = true           -- Relative line numbers
 vim.opt.cursorline = true               -- Highlight current line
 vim.opt.list = true                     -- Show special characters
-vim.opt.listchars = {
-    trail = "·",                        -- Trailing spaces
-    tab = ">\u{2014} ",
-}
 
 local _tab = 4                          -- Set tab width
 local _nib = _tab / 2                   -- Half that for wrapping
@@ -22,8 +18,12 @@ vim.opt.tabstop = _tab                  -- Tab stops
 vim.opt.shiftwidth = _tab               -- How far to indent
 vim.opt.expandtab = true                -- Use spaces indstead of tabs
 
+vim.opt.listchars = {
+    trail = "·",                        -- Trailing spaces
+    tab = ">\u{2014} ",                 -- Tabs
+}
 -- Show this character when line wraps
-vim.opt.showbreak = string.rep("~", _nib) .. "~>" .. string.rep(" ", _nib)
+-- vim.opt.showbreak = string.rep("~", _nib) .. "~>" .. string.rep(" ", _nib)
 -- At tabwidth = 4, this will show: `~~~>  ` (minus the backticks)
 
 -- Install lazy.nvim
