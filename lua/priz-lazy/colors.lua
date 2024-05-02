@@ -1,19 +1,20 @@
+---@diagnostic disable-next-line: undefined-global
+local vim = vim
+
 return {
-    "catppuccin/nvim",
-    name = "catppuccin",
+    "rose-pine/neovim",
+    name = "rose-pine",
     priority = 1000,
     lazy = false,
     config = function()
-        require("catppuccin").setup({
-            flavour = "mocha",
-            term_colors = true,
-            transparent_background = false,
-            show_end_of_buffer = true,
-            dim_inactive = {
-                enabled = false,
-                shade = "light",
-            },
+        require("rose-pine").setup({
+            variant = "dawn",
+            dark_variant = "moon",
+
+            -- styles = {
+                -- transparency = true,
+            -- },
         })
-        vim.cmd.colorscheme("catppuccin")
+        vim.cmd.colorscheme("rose-pine")
     end,
 }

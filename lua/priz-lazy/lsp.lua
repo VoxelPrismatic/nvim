@@ -1,7 +1,8 @@
--- Hide LSP warnings
+---@diagnostic disable-next-line: undefined-global
 local vim = vim
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+
 local _py_ignore = {
     "E251",     -- unexpected spaces around keyword / parameter equals
     "W293",     -- blank line contains whitespace
@@ -39,20 +40,34 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 })
 
 return {
-    "neovim/nvim-lspconfig",
-    "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/cmp-buffer",
-    "hrsh7th/cmp-path",
-    "hrsh7th/cmp-cmdline",
-    "hrsh7th/cmp-vsnip",
-    "hrsh7th/vim-vsnip",
+    {
+        "neovim/nvim-lspconfig",
+        event = "BufReadPre",
+    },
+    {
+        "hrsh7th/cmp-nvim-lsp",
+        event = "BufEnter",
+    },
+    {
+        "hrsh7th/cmp-buffer",
+        event = "BufEnter",
+    },
+    {
+        "hrsh7th/cmp-path",
+        event = "BufEnter",
+    },
+    {
+        "hrsh7th/cmp-cmdline",
+        event = "BufEnter",
+    },
     {
         "hrsh7th/nvim-cmp",
+        event = "BufEnter",
         config = function()
             local cmp = require("cmp")
             cmp.setup({
                 snippet = {
-                    expand = function(args)
+                    expand = function(_)
                         -- vim.fn["vsnip#anonymous"](args.body)
                     end,
                 },
@@ -78,6 +93,7 @@ return {
     },
     {
         "williamboman/mason.nvim",
+        event = "BufReadPre",
         name = "mason",
         config = function()
             require("mason").setup()
@@ -85,6 +101,7 @@ return {
     },
     {
         "williamboman/mason-lspconfig.nvim",
+        event = "BufReadPre",
         name = "mason-lspconfig",
         config = function()
             local lsp = require("mason-lspconfig")
@@ -107,9 +124,11 @@ return {
     },
     {
         "stevearc/conform.nvim",
+        event = "BufEnter",
     },
     {
         "nvimdev/lspsaga.nvim",
+        event = "LspAttach",
         config = function()
             require("lspsaga").setup({
                 code_action_prompt = {
@@ -119,11 +138,65 @@ return {
                     quit = "<Esc>",
                     exec = "<CR>",
                 },
+                symbol_in_winbar = {
+                    enable = true,
+                },
+                code_action = {
+                    only_in_cursor = false,
+                },
+                lightbulb = {
+                    debounce = 100,
+                    virtual_text = false,
+                },
+                finder = {
+                    keys = {
+                        quit = "<Esc>",
+                        toggle_or_open = "<CR>",
+                    },
+                },
             })
-            vim.keymap.set("n", "<leader>?", "<cmd>Lspsaga hover_doc<CR>", {
+            vim.keymap.set("n", "<leader>?", ":Lspsaga hover_doc<CR>", {
                 desc = "Get inline documentation",
                 noremap = true,
                 silent = true,
+            })
+            vim.keymap.set("n", "<leader>k", ":Lspsaga term_toggle<CR>", {
+                desc = "Toggle terminal",
+                noremap = true,
+                silent = true,
+            })
+            vim.keymap.set("n", "<leader>la", ":Lspsaga code_action<CR>", {
+                desc = "Code action",
+                noremap = true,
+                silent = true,
+            })
+            vim.keymap.set("n", "<leader>lr", ":Lspsaga rename<CR>", {
+                desc = "Rename token",
+                noremap = true,
+                silent = true,
+            })
+            vim.keymap.set("n", "<leader>lf", ":Lspsaga finder<CR>", {
+                desc = "Find token refs",
+                noremap = true,
+                silent = true,
+            })
+            vim.keymap.set("n", "<leader>ld", ":Lspsaga show_line_diagnostics<CR>", {
+                desc = "Line diagnostics",
+                noremap = true,
+                silent = true,
+            })
+            vim.keymap.set("n", "<leader>lj", ":Lspsaga goto_definition<CR>", {
+                desc = "Jump to definition",
+                noremap = true,
+                silent = true,
+            })
+
+            require("which-key").register({
+                ["<leader>"] = {
+                    l = {
+                        name = "+Saga",
+                    },
+                },
             })
         end,
     },

@@ -1,5 +1,8 @@
+---@diagnostic disable-next-line: undefined-global
+local vim = vim
+
 return {
-    -- Because sometimes I'm lazy as hell
+    -- Because sometimes I"m lazy as hell
     {
         "Exafunction/codeium.vim",
         event = "BufEnter",
@@ -10,46 +13,13 @@ return {
         event = "VeryLazy",
     },
 
-    -- No more autopairs! I find that I'm fighting with it too much
+    -- No more autopairs! I find that I"m fighting with it too much
 
-    -- Because I'm too lazy to type the whole thing
-    {
-        "nvim-telescope/telescope.nvim",
-        cmd = "Telescope",
-        branch = "0.1.x",
-        dependencies = { "nvim-lua/popup.nvim", "nvim-lua/plenary.nvim" },
-        config = function()
-            require("telescope").setup({
-                extensions = {
-                    fzf = {
-                        fuzzy = true,
-                        override_generic_sorter = true,
-                        override_file_sorter = true,
-                        case_mode = "smart_case",
-                    },
-                },
-            })
-        end,
-        init = function()
-            vim.keymap.set("n", "<leader>t", ":Telescope find_files<CR>", {
-                desc = "Find files", silent = true
-            })
-        end,
-    },
-
-    -- Taking lazy to the nect level with this one
-    {
-        "nvim-telescope/telescope-fzf-native.nvim",
-        build = "make",
-        after = "telescope.nvim",
-        config = function()
-            require("telescope").load_extension("fzf")
-        end,
-    },
 
     -- Quick comments
     {
-        'numToStr/Comment.nvim',
+        "numToStr/Comment.nvim",
+        event = "BufEnter",
         opts = {
             toggler = {
                 line = "<leader>/",
@@ -60,7 +30,6 @@ return {
                 block = "<leader>]",
             },
         },
-        lazy = false,
     },
 
     -- Undo trees may be useful

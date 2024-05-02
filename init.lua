@@ -1,4 +1,4 @@
--- Disable LSP warnings
+---@diagnostic disable-next-line: undefined-global
 local vim = vim
 
 vim.opt.number = true                   -- Show line numbers
