@@ -106,7 +106,7 @@ git pull
 - no line wrap
 - set tab width to 4 spaces
 - highlight current line
-- display trailing spaces as <code>·</code>
+- display trailing spaces as `·`
 - display tabs as `>——— `
 - clear trailing spaces on save
 - use system clipboard
@@ -115,8 +115,9 @@ git pull
 
 
 ### screenshot
-![image](https://github.com/VoxelPrismatic/nvim/assets/45671764/be3fe13b-02bf-472a-b40a-579bf12b0fa8)
-![image](https://github.com/VoxelPrismatic/nvim/assets/45671764/b0f28830-eef1-4960-afae-1fc32d92166e)
+![Screenshot_2024-05-02_02:11:18](https://github.com/VoxelPrismatic/nvim/assets/45671764/bf909310-c70c-4e56-a66d-8825a1e78875)
+![Screenshot_2024-05-02_02:12:30](https://github.com/VoxelPrismatic/nvim/assets/45671764/bbd6f752-70e9-49a3-9386-f0dbbd36efe4)
+
 
 ### my personal fav feature
 the quality of life enhancement over this little home key remapping cannot be truly described
