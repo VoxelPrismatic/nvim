@@ -9,6 +9,7 @@ end
 
 function PrizkeymapToggleOil()
     if vim.bo[0].filetype == "oil" then
+        require("oil").discard_all_changes()
         require("oil").close()
     else
         vim.cmd("Oil")
@@ -48,7 +49,7 @@ return {
     -- File tree
     {
         "stevearc/oil.nvim",
-        event = "VeryLazy",
+        lazy = false,
         config = function()
             require("oil").setup({
                 float = {

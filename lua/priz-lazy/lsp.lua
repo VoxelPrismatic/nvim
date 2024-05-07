@@ -42,7 +42,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 return {
     {
         "neovim/nvim-lspconfig",
-        event = "BufReadPre",
+        event = { "BufReadPre", "BufEnter" },
     },
     {
         "hrsh7th/cmp-nvim-lsp",
@@ -93,7 +93,7 @@ return {
     },
     {
         "williamboman/mason.nvim",
-        event = "BufReadPre",
+        event = { "BufReadPre", "BufEnter" },
         name = "mason",
         config = function()
             require("mason").setup()
@@ -101,7 +101,7 @@ return {
     },
     {
         "williamboman/mason-lspconfig.nvim",
-        event = "BufReadPre",
+        event = { "BufReadPre", "BufEnter" },
         name = "mason-lspconfig",
         config = function()
             local lsp = require("mason-lspconfig")
@@ -145,8 +145,9 @@ return {
                     only_in_cursor = false,
                 },
                 lightbulb = {
-                    debounce = 100,
+                    debounce = 500,
                     virtual_text = false,
+                    enable_in_insert = false,
                 },
                 finder = {
                     keys = {

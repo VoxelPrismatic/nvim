@@ -87,7 +87,7 @@ return {
     -- Indent bars
     {
         "lukas-reineke/indent-blankline.nvim",
-        event = "BufReadPre",
+        event = "BufReadPost",
         config = function()
             require("ibl").setup()
         end,

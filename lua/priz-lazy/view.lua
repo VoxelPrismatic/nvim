@@ -13,7 +13,7 @@ return {
     {
         "nvim-lualine/lualine.nvim",
         name = "lualine",
-        event = "BufReadPre",
+        event = { "BufReadPre", "BufEnter" },
         config = function()
             local lualine = require("lualine")
 
@@ -106,7 +106,7 @@ return {
     -- Buffer tabs
     {
         "akinsho/bufferline.nvim",
-        event = "BufReadPre",
+        event = { "BufReadPre", "BufEnter" },
         config = function()
             require("bufferline").setup({
                 options = {
@@ -123,7 +123,7 @@ return {
     -- Scroll bar
     {
         "dstein64/nvim-scrollview",
-        event = "BufReadPre",
+        event = { "BufReadPre", "BufEnter" },
     },
 
 }
