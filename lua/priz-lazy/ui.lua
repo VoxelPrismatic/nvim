@@ -20,7 +20,7 @@ return {
             vim.keymap.set("n", "zq", "za", { desc = "Toggle fold" })   -- za is too close to be comfortable
 
             require("ufo").setup({
-                provider_selector = function(bufnr, filetype, buftype)
+                provider_selector = function(_, _, _)
                     return {"treesitter", "indent"}
                 end
             })
@@ -87,7 +87,7 @@ return {
     -- Indent bars
     {
         "lukas-reineke/indent-blankline.nvim",
-        event = "BufReadPost",
+        event = { "BufReadPost", "BufEnter" },
         config = function()
             require("ibl").setup()
         end,

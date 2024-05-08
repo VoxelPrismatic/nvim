@@ -145,6 +145,7 @@ return {
                     only_in_cursor = false,
                 },
                 lightbulb = {
+                    icon = "󱐋",
                     debounce = 500,
                     virtual_text = false,
                     enable_in_insert = false,

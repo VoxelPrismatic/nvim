@@ -25,6 +25,21 @@ vim.keymap.set("n", "<leader>\\", ":noh<CR>", {
     silent = true
 })
 
+vim.keymap.set("i", "<leader>|", ":noh<CR>", {
+    desc = "Clear highlights",
+    noremap = true,
+    silent = true
+})
+
+-- Delete next word
+vim.keymap.set("i", "<C-e>", "<C-o>dw", {
+    desc = "Delete next word",
+    noremap = true,
+    silent = true
+})
+
+
+
 -- Unset function keys
 for i = 1, 12 do
     vim.keymap.set("n", "<F" .. i .. ">", "<Nop>", { noremap = true, silent = true })
@@ -36,8 +51,9 @@ end
 ---- 1. If cursor is at the beginning of the line, move to the first non-blank character
 ---- 2. If cursor is at the first non-blank character, move to the beginning of the line
 
-vim.keymap.set("n", "<Home>", ":lua PrizkeymapToggleHome()<CR>", { noremap = true, silent = true })
-vim.keymap.set("i", "<Home>", "<Esc>:lua PrizkeymapToggleHome()<CR>i", { noremap = true, silent = true })
+vim.keymap.set("n", "<Home>", "<cmd>lua PrizkeymapToggleHome()<CR>", { noremap = true, silent = true })
+vim.keymap.set("v", "<Home>", "<cmd>lua PrizkeymapToggleHome()<CR>", { noremap = true, silent = true })
+vim.keymap.set("i", "<Home>", "<cmd>lua PrizkeymapToggleHome()<CR>", { noremap = true, silent = true })
 
 function PrizkeymapToggleHome()
     local current_line = vim.fn.line(".")
@@ -45,7 +61,7 @@ function PrizkeymapToggleHome()
     if vim.fn.col(".") == first_non_blank then
         vim.cmd("normal! 0")
     elseif vim.fn.col(".") == (first_non_blank + 1) then
-        -- Sometimes it doesn"t work in normal mode
+        -- Sometimes it doesn't work in normal mode
         vim.cmd("normal! 0")
     else
         vim.cmd("normal! ^")
@@ -58,6 +74,8 @@ return {
     event = "BufEnter",
     config = function()
         local moveline = require("moveline")
+        vim.keymap.set("i", "<M-k>", moveline.up)
+        vim.keymap.set("i", "<M-j>", moveline.down)
         vim.keymap.set("n", "<M-k>", moveline.up)
         vim.keymap.set("n", "<M-j>", moveline.down)
         vim.keymap.set("v", "<M-k>", moveline.block_up)
