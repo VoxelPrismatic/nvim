@@ -16,6 +16,32 @@ local modifiers = {
     newfile = "",
 }
 
+local mod_arr = { modifiers.modified, modifiers.readonly, modifiers.newfile }
+
+LualineContext = {}
+
+local function lua_filename(fn, ctx)
+    LualineContext = ctx
+
+    local mod = ""
+    for _, v in ipairs(mod_arr) do
+        if fn:sub(-#v) == v then
+            mod = fn:sub(-(#v + 1))
+            fn = fn:sub(1, -(#v + 2))
+            break
+        end
+    end
+
+    if fn == "[No Name]" then fn = "" end
+
+    if fn:len() > 0 then
+        return fn .. mod
+    elseif vim.bo.filetype:len() > 0 then
+        return vim.bo.filetype .. mod
+    end
+    return " #nil" .. mod
+end
+
 return {
     -- Status line
     {
@@ -23,7 +49,14 @@ return {
         name = "lualine",
         event = { "BufReadPre", "BufEnter" },
         config = function()
-            local rose_pine = require("rose-pine.palette").variants.moon
+            local rose_pine = require("rose-pine.palette")
+            local inactive = {{
+                "filename",
+                draw_empty = true,
+                color = { fg = rose_pine.highlight_high, bg = rose_pine.highlight_high },
+                padding = { left = 48, right = 48 },
+            }}
+            rose_pine = rose_pine.variants.moon
             require("lualine").setup({
                 options = {
                     theme = "rose-pine-moon",
@@ -46,9 +79,7 @@ return {
                         padding = { left = 0, right = 1 },
                         color = { fg = rose_pine.surface, bg = rose_pine.gold, gui = "bold" },
                         separator = { right = "" },
-                        fmt = function(fn, _)
-                            return (fn == "[No Name]" or fn == "") and " nil" or fn
-                        end,
+                        fmt = lua_filename,
                         symbols = modifiers,
                     }},
                     lualine_b = {{
@@ -61,10 +92,10 @@ return {
                         color_hint = rose_pine.muted,
                         symbols = indicators,
                     }},
-                    lualine_c = {},
-                    lualine_x = {},
-                    lualine_y = {},
-                    lualine_z = {},
+                    lualine_c = inactive,
+                    lualine_x = inactive,
+                    lualine_y = inactive,
+                    lualine_z = inactive,
                 },
                 sections = {
                     lualine_a = {{
@@ -105,6 +136,7 @@ return {
                         separator = "",
                         padding = { left = 0, right = 1 },
                         symbols = modifiers,
+                        fmt = lua_filename,
                     }},
 
                     lualine_x = {{

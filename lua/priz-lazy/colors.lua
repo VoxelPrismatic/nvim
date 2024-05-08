@@ -1,13 +1,6 @@
 ---@diagnostic disable-next-line: undefined-global
 local vim = vim
 
-vim.api.nvim_create_autocmd("ColorScheme", {
-    pattern = "*",
-    callback = function()
-        vim.cmd("hi NormalNC guibg=" .. require("rose-pine.palette").overlay)
-    end
-})
-
 return {
     {
         "rose-pine/neovim",
