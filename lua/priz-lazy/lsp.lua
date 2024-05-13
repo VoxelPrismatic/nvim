@@ -75,6 +75,7 @@ return {
                     ["<C-d>"] = cmp.mapping.scroll_docs(-4),
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
                     ["<C-Space>"] = cmp.mapping.complete(),
+                    ["<F4>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
                     ["<F3>"] = cmp.mapping.close(),
                     ["<F2>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
                     ["<F1>"] = cmp.mapping.confirm({
@@ -128,7 +129,7 @@ return {
     },
     {
         "nvimdev/lspsaga.nvim",
-        event = "LspAttach",
+        event = { "LspAttach", "VeryLazy" },
         config = function()
             require("lspsaga").setup({
                 code_action_prompt = {

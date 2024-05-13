@@ -1,35 +1,41 @@
 # nvim
 My custom neovim flavor
 
-# warning
-as of may 02 2024, you will get an error when using this config. rose-pine has not merged my pr
-to support a different color for lualine. you can fix it in `lua/priz-lazy/colors.lua`
-
-# install
+### install
 ```sh
 rm -rdf ~/.config/nvim
 rm -rdf ~/.local/share/nvim
 git clone https://github.com/VoxelPrismatic/nvim ~/.config/nvim
 ```
 
-# update
+make sure you also have the following packages installed:
+- clang
+- fzf
+- ripgrep
+
+
+### update
 ```
 cd ~/.config/nvim
 git reset --hard
 git pull
 ```
 
-## keys
+# details
+### keys
 `<leader>` = `\\`
-|        combo        |   mode   |                 action                 |      location      |    package    |
+|       motion        |   mode   |                 action                 |      location      |    package    |
 |---------------------|----------|----------------------------------------|--------------------|---------------|
 | `<leader>u`         | n        | launch undo tree                       | `init.lua`         | undotree      |
 | `<leader>/`         | n, v     | comment line                           | `init.lua`         | comment.nvim  |
+| `<leader>/`         | i        | comment line                           | `init.lua`         | comment.nvim  |
 | `<leader>]`         | n, v     | comment block                          | `init.lua`         | comment.nvim  |
 | `<leader>b`         | n        | new buffer                             | `keys.lua`         | [nil]         |
 | `<leader>c`         | n        | close buffer                           | `keys.lua`         | [nil]         |
 | `<leader>\`         | n        | clear highlights                       | `keys.lua`         | [nil]         |
-| `<Home>`            | n, i     | start of line or start of code         | `keys.lua`         | [nil]         |
+| `<leader>|`         | i        | clear highlights                       | `keys.lua`         | [nil]         |
+| `<Home>`            | n, i, v  | start of line or start of code         | `keys.lua`         | [nil]         |
+| `<C-e>`             | i        | delete next word                       | `keys.lua`         | [nil]         |
 | `<M-k>`             | n, v     | move lines up                          | `keys.lua`         | moveline.nvim |
 | `<M-j>`             | n, v     | move lines down                        | `keys.lua`         | moveline.nvim |
 | `<F1>`-`<F12>`      | n, i     | [unset]                                | `keys.lua`         | [nil]         |
@@ -39,6 +45,7 @@ git pull
 | `<F1>`              | i        | confirm autocomplete                   | `lsp.lua`          | nvim-cmp      |
 | `<F2>`              | i        | next autocomplete                      | `lsp.lua`          | nvim-cmp      |
 | `<F3>`              | i        | escape autocomplete                    | `lsp.lua`          | nvim-cmp      |
+| `<F4>`              | i        | prev autocomplete                      | `lsp.lua`          | nvim-cmp      |
 | `<leader>?`         | n        | hover docs                             | `lsp.lua`          | lspsaga       |
 | `<leader>k`         | n        | hover konsole                          | `lsp.lua`          | lspsaga       |
 | `<leader>la`        | n        | code action                            | `lsp.lua`          | lspsaga       |
@@ -60,7 +67,7 @@ git pull
 | `zq`                | n        | toggle this fold                       | `tree.lua`         | nvim ufo      |
 
 
-## Packages
+### packages
 - colors
   - [rose-pine](https://github.com/rose-pine/neovim)
 - init
@@ -99,7 +106,7 @@ git pull
   - [bufferline](https://github.com/akinsho/bufferline.nvim)
   - [scrollview](https://github.com/dstein64/nvim-scrollview)
 
-## Settings
+### settings
 - enable relative line numbers
 - enable mouse support
 - ignorecase & smartcase searching

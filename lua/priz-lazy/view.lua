@@ -56,10 +56,9 @@ return {
                 color = { fg = rose_pine.highlight_high, bg = rose_pine.highlight_high },
                 padding = { left = 48, right = 48 },
             }}
-            rose_pine = rose_pine.variants.moon
             require("lualine").setup({
                 options = {
-                    theme = "rose-pine-moon",
+                    theme = "rose-pine-neutral",
                     section_separators = { left = "", right = "" },
                     component_separators = { left = "", right = "" },
                     icons_enabled = true,

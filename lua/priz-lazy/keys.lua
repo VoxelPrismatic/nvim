@@ -31,6 +31,12 @@ vim.keymap.set("i", "<leader>|", ":noh<CR>", {
     silent = true
 })
 
+vim.keymap.set("i", "<leader><CR>", "\\", {
+    desc = "Insert backslash",
+    noremap = true,
+    silent = true
+})
+
 -- Delete next word
 vim.keymap.set("i", "<C-e>", "<C-o>dw", {
     desc = "Delete next word",

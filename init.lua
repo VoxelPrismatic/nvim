@@ -18,6 +18,8 @@ vim.opt.tabstop = _tab                  -- Tab stops
 vim.opt.shiftwidth = _tab               -- How far to indent
 vim.opt.expandtab = true                -- Use spaces indstead of tabs
 
+vim.opt.shell = "/bin/zsh"
+
 vim.opt.listchars = {
     trail = "·",                        -- Trailing spaces
     tab = ">\u{2014} ",                 -- Tabs
