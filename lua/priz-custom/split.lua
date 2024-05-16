@@ -1,6 +1,3 @@
----@diagnostic disable-next-line: undefined-global
-local vim = vim
-
 vim.keymap.set("n", "<leader>s<Up>", ":hor abo sp +bNext<CR>", {
     desc = "Add split above",
     noremap = true,
@@ -25,6 +22,5 @@ vim.keymap.set("n", "<leader>s<Right>", ":vert rightb sp +bNext<CR>", {
     silent = true,
 })
 
-
-
 return {}
+
