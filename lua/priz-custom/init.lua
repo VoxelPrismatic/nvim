@@ -22,18 +22,6 @@ vim.keymap.set("n", "<leader>\\", "<cmd>noh<CR>", {
     silent = true
 })
 
-vim.keymap.set("i", "<leader>|", "<cmd>noh<CR>", {
-    desc = "Clear highlights",
-    noremap = true,
-    silent = true
-})
-
-vim.keymap.set("i", "<leader><CR>", "\\", {
-    desc = "Insert backslash",
-    noremap = true,
-    silent = true
-})
-
 -- Delete next word
 vim.keymap.set("i", "<C-e>", "<C-o>dw", {
     desc = "Delete next word",

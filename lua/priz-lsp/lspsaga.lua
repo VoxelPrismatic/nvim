@@ -1,3 +1,50 @@
+local keybinds = {
+    ["?"] = {
+        "<cmd>Lspsaga hover_doc<CR>",
+        "Get inline documentation",
+    },
+    ["k"] = {
+        "<cmd>Lspsaga term_toggle<CR>",
+        "Toggle terminal",
+    },
+    ["la"] = {
+        "<cmd>Lspsaga code_action<CR>",
+        "Code action",
+    },
+    ["lr"] = {
+        "<cmd>Lspsaga rename<CR>",
+        "Rename token",
+    },
+    ["lf"] = {
+        "<cmd>Lspsaga finder<CR>",
+        "Find token refs",
+    },
+    ["ld"] = {
+        "<cmd>Lspsaga show_line_diagnostics<CR>",
+        "Line diagnostics",
+    },
+    ["lo"] = {
+        "<cmd>Lspsaga outline<CR>",
+        "Outline",
+    },
+    ["lj"] = {
+        "<cmd>Lspsaga goto_definition<CR>",
+        "Jump to declaration",
+    },
+    ["lt"] = {
+        "<cmd>Lspsaga goto_type_definition<CR>",
+        "Jump to struct",
+    },
+    ["lsj"] = {
+        "<cmd>Lspsaga peek_definition<CR>",
+        "Peek declaration",
+    },
+    ["lst"] = {
+        "<cmd>Lspsaga peek_type_definition<CR>",
+        "Peek struct",
+    },
+}
+
 return {
     {
         "nvimdev/lspsaga.nvim",
@@ -9,6 +56,8 @@ return {
                     expand = "",
                     collapse = "",
                     code_action = "󱐋",
+                    actionfix = "",
+                    imp_sign = "",
                 },
                 code_action_prompt = {
                     enable = false,
@@ -38,59 +87,15 @@ return {
                 implement = {
                     enable = true,
                 },
-            })
-            vim.keymap.set("n", "<leader>?", "<cmd>Lspsaga hover_doc<CR>", {
-                desc = "Get inline documentation",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("n", "<leader>k", "<cmd>Lspsaga term_toggle<CR>", {
-                desc = "Toggle terminal",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("n", "<leader>la", "<cmd>Lspsaga code_action<CR>", {
-                desc = "Code action",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("n", "<leader>lr", "<cmd>Lspsaga rename<CR>", {
-                desc = "Rename token",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("n", "<leader>lf", "<cmd>Lspsaga finder<CR>", {
-                desc = "Find token refs",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("n", "<leader>ld", "<cmd>Lspsaga show_line_diagnostics<CR>", {
-                desc = "Line diagnostics",
-                noremap = true,
-                silent = true,
+                outline = {
+                    layout = "float",
+                    max_height = 0.7,
+                },
             })
 
-            vim.keymap.set("n", "<leader>lj", "<cmd>Lspsaga goto_definition<CR>", {
-                desc = "Jump to declaration",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("n", "<leader>lt", "<cmd>Lspsaga goto_type_definition<CR>", {
-                desc = "Jump to struct",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("n", "<leader>lsj", "<cmd>Lspsaga peek_definition<CR>", {
-                desc = "Peek declaration",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("n", "<leader>lst", "<cmd>Lspsaga peek_type_definition<CR>", {
-                desc = "Peek struct",
-                noremap = true,
-                silent = true,
-            })
-
+            for k, v in pairs(keybinds) do
+                vim.keymap.set("n", "<leader>" .. k, v[1], { desc = v[2], noremap = true, silent = true })
+            end
 
             require("which-key").register({
                 ["<leader>"] = {

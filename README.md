@@ -1,7 +1,7 @@
 # nvim
 My custom neovim flavor
 
-### install
+### Install
 ```sh
 rm -rdf ~/.config/nvim
 rm -rdf ~/.local/share/nvim
@@ -9,127 +9,156 @@ git clone https://github.com/VoxelPrismatic/nvim ~/.config/nvim
 ```
 
 make sure you also have the following packages installed:
-- clang
-- fzf
-- ripgrep
+- `clang`
+- `fzf`
+- `ripgrep`
 
 
-### update
+### Update
 ```
 cd ~/.config/nvim
 git reset --hard
 git pull
 ```
 
-# details
-### keys
+# Details
+### Theme
+**Main:** Rose Pine Dawn (my fork)
+**Lualine:** Neutral, with mods to the inactive bar
+**Bufferline:** Default
+
+### Custom keys & motions
 `<leader>` = `\\`
-|       motion        |   mode   |                 action                 |      location      |    package    |
-|---------------------|----------|----------------------------------------|--------------------|---------------|
-| `<leader>u`         | n        | launch undo tree                       | `init.lua`         | undotree      |
-| `<leader>/`         | n, v     | comment line                           | `init.lua`         | comment.nvim  |
-| `<leader>/`         | i        | comment line                           | `init.lua`         | comment.nvim  |
-| `<leader>]`         | n, v     | comment block                          | `init.lua`         | comment.nvim  |
-| `<leader>b`         | n        | new buffer                             | `keys.lua`         | [nil]         |
-| `<leader>c`         | n        | close buffer                           | `keys.lua`         | [nil]         |
-| `<leader>\`         | n        | clear highlights                       | `keys.lua`         | [nil]         |
-| `<leader>|`         | i        | clear highlights                       | `keys.lua`         | [nil]         |
-| `<Home>`            | n, i, v  | start of line or start of code         | `keys.lua`         | [nil]         |
-| `<C-e>`             | i        | delete next word                       | `keys.lua`         | [nil]         |
-| `<M-k>`             | n, v     | move lines up                          | `keys.lua`         | moveline.nvim |
-| `<M-j>`             | n, v     | move lines down                        | `keys.lua`         | moveline.nvim |
-| `<F1>`-`<F12>`      | n, i     | [unset]                                | `keys.lua`         | [nil]         |
-| `<C-d>`             | i        | scroll autocomplete down               | `lsp.lua`          | nvim-cmp      |
-| `<C-f>`             | i        | scroll autocomplete up                 | `lsp.lua`          | nvim-cmp      |
-| `<C-space>`         | i        | autocomplete                           | `lsp.lua`          | nvim-cmp      |
-| `<F1>`              | i        | confirm autocomplete                   | `lsp.lua`          | nvim-cmp      |
-| `<F2>`              | i        | next autocomplete                      | `lsp.lua`          | nvim-cmp      |
-| `<F3>`              | i        | escape autocomplete                    | `lsp.lua`          | nvim-cmp      |
-| `<F4>`              | i        | prev autocomplete                      | `lsp.lua`          | nvim-cmp      |
-| `<leader>?`         | n        | hover docs                             | `lsp.lua`          | lspsaga       |
-| `<leader>k`         | n        | hover konsole                          | `lsp.lua`          | lspsaga       |
-| `<leader>la`        | n        | code action                            | `lsp.lua`          | lspsaga       |
-| `<leader>lr`        | n        | rename token                           | `lsp.lua`          | lspsaga       |
-| `<leader>lf`        | n        | find token references                  | `lsp.lua`          | lspsaga       |
-| `<leader>ld`        | n        | diagnostics                            | `lsp.lua`          | lspsaga       |
-| `<leader>lj`        | n        | jump to definition                     | `lsp.lua`          | lspsaga       |
-| `<leader>s<Up>`     | n        | add split above                        | `split-keys.lua`   | [nil]         |
-| `<leader>s<Down>`   | n        | add split below                        | `split-keys.lua`   | [nil]         |
-| `<leader>s<Left>`   | n        | add split left                         | `split-keys.lua`   | [nil]         |
-| `<leader>s<Right>`  | n        | add split right                        | `split-keys.lua`   | [nil]         |
-| `<leader>tf`        | n        | telescope find files                   | `telescope.lua`    | telescope     |
-| `<leader>tg`        | n        | telescope live grep                    | `telescope.lua`    | telescope     |
-| `<leader>tb`        | n        | telescope buffers                      | `telescope.lua`    | telescope     |
-| `<leader>tt`        | n        | launch telescope                       | `telescope.lua`    | telescope     |
-| `<leader>n`         | n        | toggle oil                             | `tree.lua`         | oil.nvim      |
-| `zR`                | n        | open all folds                         | `tree.lua`         | nvim ufo      |
-| `zM`                | n        | close all folds                        | `tree.lua`         | nvim ufo      |
-| `zq`                | n        | toggle this fold                       | `tree.lua`         | nvim ufo      |
+|               Plugin                |          Location         |    Mode    |       Motion        |                  Action                  |
+|-------------------------------------|---------------------------|------------|---------------------|------------------------------------------|
+| \[custom\]                          | `custom/home.lua`         | `n i v`    | `<Home>`            | Start of line or start of code           |
+| \[custom\]                          | `custom/init.lua`         | `n    `    | `<leader>b`         | New buffer                               |
+| \[custom\]                          | `custom/init.lua`         | `n    `    | `<leader>c`         | Close buffer                             |
+| \[custom\]                          | `custom/init.lua`         | `n    `    | `<leader>\\`        | Clear highlights                         |
+| \[custom\]                          | `custom/init.lua`         | `  i  `    | `<C-e>`             | Delete next word (like ctrl+del)         |
+| \[custom\]                          | `custom/init.lua`         | `n i  `    | `<F1>` - `<F12>`    | \[unset\]                                |
+| \[custom\]                          | `custom/split.lua`        | `n    `    | `<leader>s<Up>`     | Add split above                          |
+| \[custom\]                          | `custom/split.lua`        | `n    `    | `<leader>s<Down>`   | Add split below                          |
+| \[custom\]                          | `custom/split.lua`        | `n    `    | `<leader>s<Left>`   | Add split left                           |
+| \[custom\]                          | `custom/split.lua`        | `n    `    | `<leader>s<Right>`  | Add split right                          |
+| [numToStr/Comment.nvim][nscm]       | `interact/comment.lua`    | `n   v`    | `<leader>/`         | Comment line                             |
+| [numToStr/Comment.nvim][nscm]       | `interact/comment.lua`    | `n   v`    | `<leader>]`         | Comment block                            |
+| [kevinhwang91/nvim-ufo][nufo]       | `interact/folding.lua`    | `n    `    | `zR`                | Open all folds                           |
+| [kevinhwang91/nvim-ufo][nufo]       | `interact/folding.lua`    | `n    `    | `zM`                | Close all folds                          |
+| [kevinhwang91/nvim-ufo][nufo]       | `interact/folding.lua`    | `n    `    | `zq`                | Toggle this fold                         |
+| [willothy/moveline.nvim][mvln]      | `interact/moveline.lua`   | `n i v`    | `<M-k>`             | Move lines up                            |
+| [willothy/moveline.nvim][mvln]      | `interact/moveline.lua`   | `n i v`    | `<M-j>`             | Move lines down                          |
+| [voxelprismatic/rabbit.nvim][zrbt]  | `interact/rabbit.lua`     | `n    `    | `<leader>r`         | Launch Rabbit                            |
+| [telescope.nvim][tele]              | `interact/telescope.lua`  | `n    `    | `<leader>tf`        | Find files                               |
+| [telescope.nvim][tele]              | `interact/telescope.lua`  | `n    `    | `<leader>tg`        | Live grep                                |
+| [telescope.nvim][tele]              | `interact/telescope.lua`  | `n    `    | `<leader>tb`        | Buffers (but rabbit is better)           |
+| [telescope.nvim][tele]              | `interact/telescope.lua`  | `n    `    | `<leader>tt`        | Launch telescope                         |
+| [hrsh7th/nvim-cmp][hcmp]            | `lsp/init.lua`            | `  i  `    | `<C-d>`             | Scroll docs down                         |
+| [hrsh7th/nvim-cmp][hcmp]            | `lsp/init.lua`            | `  i  `    | `<C-f>`             | Scroll docs up                           |
+| [hrsh7th/nvim-cmp][hcmp]            | `lsp/init.lua`            | `  i  `    | `<C-space>`         | Show completion menu                     |
+| [hrsh7th/nvim-cmp][hcmp]            | `lsp/init.lua`            | `  i  `    | `<F1>`              | Confirm completion choice                |
+| [hrsh7th/nvim-cmp][hcmp]            | `lsp/init.lua`            | `  i  `    | `<F2>`              | Next completion choice                   |
+| [hrsh7th/nvim-cmp][hcmp]            | `lsp/init.lua`            | `  i  `    | `<F3>`              | Close completion menu                    |
+| [hrsh7th/nvim-cmp][hcmp]            | `lsp/init.lua`            | `  i  `    | `<F4>`              | Prev completion choice                   |
+| [nvimdev/lspsaga.nvim][saga]        | `lsp/lspsaga.lua`         | `n    `    | `<leader>?`         | Show LSP documentation                   |
+| [nvimdev/lspsaga.nvim][saga]        | `lsp/lspsaga.lua`         | `n    `    | `<leader>k`         | Toggle terminal (konsole)                |
+| [nvimdev/lspsaga.nvim][saga]        | `lsp/lspsaga.lua`         | `n    `    | `<leader>lr`        | Rename variable                          |
+| [nvimdev/lspsaga.nvim][saga]        | `lsp/lspsaga.lua`         | `n    `    | `<leader>la`        | Show LSP code actions                    |
+| [nvimdev/lspsaga.nvim][saga]        | `lsp/lspsaga.lua`         | `n    `    | `<leader>lf`        | Find all token references                |
+| [nvimdev/lspsaga.nvim][saga]        | `lsp/lspsaga.lua`         | `n    `    | `<leader>ld`        | Show LSP diagnostics                     |
+| [nvimdev/lspsaga.nvim][saga]        | `lsp/lspsaga.lua`         | `n    `    | `<leader>lo`        | Show file outline                        |
+| [nvimdev/lspsaga.nvim][saga]        | `lsp/lspsaga.lua`         | `n    `    | `<leader>lj`        | Jump to declaration                      |
+| [nvimdev/lspsaga.nvim][saga]        | `lsp/lspsaga.lua`         | `n    `    | `<leader>lt`        | Jump to struct                           |
+| [nvimdev/lspsaga.nvim][saga]        | `lsp/lspsaga.lua`         | `n    `    | `<leader>lsj`       | Peek declaration                         |
+| [nvimdev/lspsaga.nvim][saga]        | `lsp/lspsaga.lua`         | `n    `    | `<leader>lst`       | Peek struct                              |
+| [stevearc/oil.nvim][soil]           | `viewport/oil.lua`        | `n    `    | `<leader>o`         | Open file tree                           |
 
 
-### packages
-- colors
-  - [rose-pine](https://github.com/rose-pine/neovim)
-- init
-  - [codeium](https://github.com/Exafunction/codeium.vim)
-  - [vim be good](https://github.com/theprimeagen/vim-be-good)
-  - [comments](https://github.com/numToStr/Comment.nvim)
-  - [undotree](https://github.com/mbbill/undotree)
-- keys
-  - [moveline](https://github.com/willothy/moveline.nvim)
-- lsp
-  - [lspconfig](https://github.com/neovim/nvim-lspconfig)
-  - [cmp](https://github.com/hrsh7th/nvim-cmp)
-  - [cmp-nvim-lsp](https://github.com/hrsh7th/cmp-nvim-lsp)
-  - [cmp-buffer](https://github.com/hrsh7th/cmp-buffer)
-  - [cmp-path](https://github.com/hrsh7th/cmp-path)
-  - [cmp-cmdline](https://github.com/hrsh7th/cmp-cmdline)
-  - [mason](https://github.com/williamboman/mason.nvim)
-  - [mason-lspconfig](https://github.com/williamboman/mason-lspconfig)
-  - [conform](https://github.com/stevearc/conform.nvim)
-  - [lspsaga](https://github.com/nvimdev/lspsaga.nvim)
-- telescope
-  - [telescope-fzf-native](https://github.com/nvim-telescope/telescope-fzf-native.nvim)
-  - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
-- tree
-  - [oil](https://github.com/stevearc/oil.nvim)
-  - [gitsigns](https://github.com/lewis6991/gitsigns.nvim)
-- ui
-  - [ufo](https://github.com/kevinhwang91/nvim-ufo)
-  - [treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
-  - [devicons](https://github.com/ryanoasis/vim-devicons)
-  - [colorizer](https://github.com/NvChad/nvim-colorizer.lua)
-  - [which key](https://github.com/folke/which-key.nvim)
-  - [indent-blankline](https://github.com/lukas-reineke/indent-blankline.nvim)
-- view
-  - [lualine](https://github.com/nvim-lualine/lualine.nvim)
-  - [bufferline](https://github.com/akinsho/bufferline.nvim)
-  - [scrollview](https://github.com/dstein64/nvim-scrollview)
-
-### settings
-- enable relative line numbers
-- enable mouse support
-- ignorecase & smartcase searching
-- no line wrap
-- set tab width to 4 spaces
-- highlight current line
-- display trailing spaces as `·`
-- display tabs as `>——— `
-- clear trailing spaces on save
-- use system clipboard
-- py lint ignore E251, W293, W391
-- disable background (enable transparency)
+### Other plugins
+|              Plugin                 |          Location         |             Purpose              |
+|-------------------------------------|---------------------------|----------------------------------|
+| [NvChad/nvim-colorizer.lua][nclr]   | `interact/colorizer.lua`  | Highlight color codes            |
+| [nvim-treesitter][tree]             | `interact/folding.lua`    | Fold code blocks                 |
+| [nvimdev/indentmini.nvim][idnt]     | `interact/indentbars.lua` | Show indent lines                |
+| [ThePrimeagen/vim-be-good][skil]    | `interact/init.lua`       | I still use arrow keys           |
+| [telescope; fzf-native.nvim][tfzf]  | `interact/telescope.lua`  | Fuzzy search                     |
+| [folke/which-key.nvim][wkey]        | `interact/whichkey.lua`   | Show keybindings                 |
+| [exafunction/codeium.vim][cplt]     | `lsp/codeium.lua`         | Like Copilot, but free           |
+| [neovim/nvim-lspconfig][nlsp]       | `lsp/init.lua`            | LSP support for neovim           |
+| [williamboman/mason.nvim][wmsn]     | `lsp/mason.lua`           | Because LSPs are based           |
+| [lewis6991/gitsigns.nvim][gits]     | `viewport/giticons.lua`   | Show git diff in line no column  |
+| [ryanosis/vim-devicons][vicn]       | `viewport/icons.lua`      | Devicons for nvim                |
+| [rosepine-neovim][rose]             | `viewport/init.lua`       | My favorite theme                |
+| [dstein64/nvim-scrollview][scrl]    | `viewport/scrollview.lua` | Scrollbar                        |
+| [akinsho/bufferline.nvim][bbuf]     | `viewport/tabline.lua`    | Show tabs and buffers            |
+| [nvim-lualine/lualine.nvim][lual]   | `viewport/lualine.lua`    | Lualine                          |
 
 
-### screenshot
-![Screenshot_2024-05-02_02:11:18](https://github.com/VoxelPrismatic/nvim/assets/45671764/bf909310-c70c-4e56-a66d-8825a1e78875)
-![Screenshot_2024-05-02_02:12:30](https://github.com/VoxelPrismatic/nvim/assets/45671764/bbd6f752-70e9-49a3-9386-f0dbbd36efe4)
+[nscm]: https://github.com/numToStr/Comment.nvim
+[nufo]: https://github.com/kevinhwang91/nvim-ufo
+[mvln]: https://github.com/willothy/moveline.nvim
+[zrbt]: https://github.com/voxelprismatic/rabbit.nvim
+[tele]: https://github.com/nvim-telescope/telescope.nvim
+[hcmp]: https://github.com/hrsh7th/nvim-cmp
+[saga]: https://github.com/glepnir/lspsaga.nvim
+[nclr]: https://github.com/NvChad/nvim-colorizer.lua
+[tree]: https://github.com/nvim-treesitter/nvim-treesitter
+[idnt]: https://github.com/nvimdev/indentmini.nvim
+[skil]: https://github.com/ThePrimeagen/vim-be-good
+[tfzf]: https://github.com/nvim-telescope/telescope-fzf-native.nvim
+[wkey]: https://github.com/folke/which-key.nvim
+[cplt]: https://github.com/exafunction/codeium.vim
+[nlsp]: https://github.com/neovim/nvim-lspconfig
+[wmsn]: https://github.com/williamboman/mason.nvim
+[gits]: https://github.com/lewis6991/gitsigns.nvim
+[vicn]: https://github.com/ryanoasis/vim-devicons
+[rose]: https://github.com/voxelprismatic/rosepine-neovim
+[bbuf]: https://github.com/akinsho/bufferline.nvim
+[lual]: https://github.com/nvim-lualine/lualine.nvim
+[scrl]: https://github.com/nvim-scrollview/nvim-scrollview
+[soil]: https://github.com/steveaxton/oil.nvim
 
 
-### my personal fav feature
-the quality of life enhancement over this little home key remapping cannot be truly described
-<video src="https://github.com/VoxelPrismatic/nvim/assets/45671764/7a20dd54-e125-4ace-afd5-7aa66992c705"></video>
+### Settings
+- Enable relative line numbers
+- Enable mouse support
+- Ignorecase & smartcase searching
+- Disable line wrap
+- Indent tab = four spaces `    `
+- Real tab = `>——— `
+- Trailing spaces = `·`
+  - All trailing spaces are removed upon save
+- Highlight current line
+- Use system clipboard
+- Disable background (enable transparency)
 
-### side note
-this uses the system clipboard. it is recommended that you have an extra tool to help you retrieve previous clips.
-since i use KDE, this is built in.
+
+### LSP Configs
+- Pylsp
+  - `pylsp`
+    - `jedi_completion`
+      - fuzzy = true
+      - eager = true
+      - include class objects = true
+      - include function objects = true
+    - `flake8`, `pycodestyle`
+      - max line length = 120
+      - ignore =
+        - `E251` - Unexpected spaces around keyword / parameter equals
+        - `W293` - Blank line contains whitespace (as this is deleted upon save)
+        - `W391` - Blank line at end of file
+- lua ls
+  - `Lua`
+    - `diagnostics`
+      - `disable`
+        - Trailing whitespace
+- harper ls
+  - `harper_ls`
+    - `linters`
+      - Sentence capitalization = false (keeps screaming on URLs)
+      - Long sentences = false (luadoc moment)
+      - Spelled numbers = true
+
+### Screenshot
+![Screenshot_20240517_203623](https://github.com/VoxelPrismatic/nvim/assets/45671764/636d254b-34c1-4415-ab21-5f7f15109027)
+![Screenshot_20240517_203909](https://github.com/VoxelPrismatic/nvim/assets/45671764/f9df0df4-3701-46c9-a9b4-4d88fabfbe98)

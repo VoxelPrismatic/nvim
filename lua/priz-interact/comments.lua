@@ -12,10 +12,5 @@ return {
         },
     },
     init = function()
-        vim.keymap.set("i", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", {
-            desc = "Toggle comment",
-            noremap = true,
-            silent = true,
-        })
     end,
 }
