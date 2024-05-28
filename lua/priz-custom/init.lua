@@ -37,4 +37,7 @@ for i = 1, 12 do
     vim.keymap.set("i", "<F" .. i .. ">", "<Nop>", { noremap = true, silent = true })
 end
 
+
+vim.keymap.set("i", "<S-Tab>", "<cmd>CodeiumToggle<CR> <Backspace>", { noremap = true, silent = true })
+
 return {}

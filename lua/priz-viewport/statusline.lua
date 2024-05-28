@@ -38,7 +38,7 @@ local function lua_filename(fn, _)
     elseif vim.bo.filetype:len() > 0 then
         return vim.bo.filetype .. mod
     end
-    return " #nil" .. mod
+    return "#nil" .. mod
 end
 
 local line_seps = {
@@ -50,9 +50,47 @@ local line_seps = {
 
 local other_icons = {
     vim = "",
-    bot = "󰚩",
+    bot = "󰮯",
     line = "",
+    sleep = "󰤄",
+    term = "",
+    cur = "󰇀",
+    zap = "󱐋",
+    more = "",
 }
+
+-- https://github.com/nvim-lualine/lualine.nvim/blob/master/lua/lualine/utils/mode.lua
+local mode_msgs = {
+    ["n"] =     other_icons.vim .. " NORMAL",           -- Normal
+    ["no"] =    other_icons.vim .. " OPERATOR",         -- Normal, but the operator is waiting for a quantity
+    ["nov"] =   other_icons.vim .. " v/OPERATOR",       -- Visual, but the operator is waiting for a quantity
+    ["noV"] =   other_icons.vim .. " v/OPERATOR",       -- V-line, but the operator is waiting for a quantity
+    ["no\22"] = other_icons.vim .. " v/OPERATOR",       -- V-block, but the operator is waiting for a quantity
+
+    ["v"] =     other_icons.vim .. " VISUAL",           -- Visual
+    ["V"] =     other_icons.vim .. " V-LINE",           -- V-line
+    ["\22"] =   other_icons.vim .. " V-BLOCK",          -- V-block
+
+    ["s"] =     other_icons.cur .. " SELECT",           -- Select
+    ["S"] =     other_icons.cur .. " S-LINE",           -- S-Line
+    ["\19"] =   other_icons.cur .. " S-BLOCK",          -- S-Block
+
+    ["i"] =     other_icons.vim .. " INSERT",           -- Insert
+
+    ["R"] =     other_icons.zap .. " REPLACE",          -- Replace
+
+    ["rm"] =    other_icons.more .. " MORE",            -- More-prompt
+    ["r?"] =    other_icons.more .. " CONFIRM",         -- Confirm-prompt
+
+
+    ["c"] =     other_icons.vim .. " COMMAND",          -- Command
+
+    ["!"] =     other_icons.term .. " SHELL",           -- Shell
+    ["t"] =     other_icons.term .. " TERMINAL",        -- Terminal
+
+    ["_"] =     other_icons.sleep .. " INACTIVE",       -- Inactive window
+}
+
 
 local function spread(template)
     local result = {}
@@ -89,46 +127,102 @@ return {
         name = "lualine",
         event = "VeryLazy",
         config = function()
-            local rose_pine = require("rose-pine.palette").variants.dawn
-            local inactive = {{
-                "filename",
-                draw_empty = true,
-                color = { fg = rose_pine.highlight_high, bg = rose_pine.highlight_high },
-                padding = { left = 128, right = 128 },
-            }}
-
-            local inactive_color = { fg = rose_pine.surface, bg = rose_pine.gold, gui = "bold" }
-
-            local diagnostic_line = {
-                "diagnostics",
-                sources = { "nvim_lsp" },
-                sections = { "error", "warn", "info", "hint" },
-                color_error = rose_pine.love,
-                color_warn = rose_pine.gold,
-                color_info = rose_pine.iris,
-                color_hint = rose_pine.muted,
-                symbols = icons.indicators,
-            }
-
-            local file_line = {
-                {
-                    "filetype",
-                    icons_enabled = true,
-                    icon_only = true,
-                    colored = true,
-                    icon = { align = "left" },
-                    separator = "",
-                    padding = { left = 1, right = 0 },
+            local rose_pine = require("rose-pine.palette")
+            local devicons = require("nvim-web-devicons").setup({
+                override = {
+                    __blank = {
+                        icon = " ",
+                        name = "Blank",
+                    },
                 },
-                {
-                    "filename",
-                    separator = "",
-                    padding = { left = 0, right = 1 },
-                    symbols = icons.modifiers,
-                    fmt = lua_filename,
-                }
-            }
+                color_icons = false,
+            })
 
+            local components = {
+                lualine_a = {{
+                    "mode",
+                    icons_enabled = false,
+                    fmt = function(n)
+                        return mode_msgs[vim.fn.mode()] or other_icons.vim .. " " .. vim.fn.mode() .. " := " .. n
+                    end
+                }},
+
+                lualine_y = {
+                    function()
+                        local clients = vim.lsp.get_active_clients()
+                        local selected = "nil"
+                        local seconds = math.floor(vim.loop.gettimeofday() / 5)
+                        if #clients > 0 then
+                            selected = clients[math.fmod(seconds, #clients) + 1].name
+                        end
+
+                        return other_icons.bot .. #clients .. " " .. selected
+                    end,
+                },
+
+                lualine_b = {
+                    { "branch" },
+                    {
+                        "diff",
+                        diff_color = {
+                            added = { fg = rose_pine.iris },
+                            modified = { fg = rose_pine.gold },
+                            removed = { fg = rose_pine.rose },
+                        },
+                        symbols = { removed = "–" },
+                    },
+                },
+
+                lualine_c = {
+                    {
+                        "filetype",
+                        icons_enabled = true,
+                        icon_only = true,
+                        colored = false,
+                        icon = { align = "left" },
+                        separator = "",
+                        padding = { left = 1, right = 0 },
+                        draw_empty = true,
+                        fmt = function(c, ctx)
+                            -- Add a space when no filetype is found
+                            ctx.options.separator = (#c == 0) and " " or ""
+                            return c
+                        end
+                    },
+                    {
+                        "filename",
+                        separator = "",
+                        padding = { left = 0, right = 1 },
+                        symbols = icons.modifiers,
+                        fmt = lua_filename,
+                    }
+                },
+
+                lualine_x = {{
+                    "diagnostics",
+                    sources = { "nvim_lsp" },
+                    sections = { "error", "warn", "info", "hint" },
+                    color_error = rose_pine.love,
+                    color_warn = rose_pine.gold,
+                    color_info = rose_pine.iris,
+                    color_hint = rose_pine.muted,
+                    symbols = icons.indicators,
+                }},
+
+                lualine_z = {
+                    {
+                        "%l/%L",
+                        icons_enabled = true,
+                        icon = other_icons.line,
+                        color = { gui = "bold" },
+                        padding = { left = 1, right = 0 },
+                    }, {
+                        "%c",
+                        color = { gui = "italic" },
+                        padding = { left = 0, right = 1 },
+                    }
+                },
+            }
 
             require("lualine").setup({
                 options = {
@@ -137,70 +231,19 @@ return {
                     component_separators = { left = line_seps.line, right = line_seps.line },
                     icons_enabled = true,
                 },
-                inactive_sections = {
-                    lualine_a = {
-                        spread(file_line[1]) {
-                            color = inactive_color,
-                            colored = false
-                        },
-                        spread(file_line[2]) {
-                            color = inactive_color,
-                            separator = { right = line_seps.circle },
-                        },
-                    },
-                    lualine_b = { spread(diagnostic_line) {
-                        color = { bg = rose_pine.highlight_med },
-                        separator = { right = line_seps.circle },
-                    }},
-                    lualine_c = inactive,
-                    lualine_x = inactive,
-                    lualine_y = inactive,
-                    lualine_z = inactive,
-                },
-                sections = {
+
+                inactive_sections = spread(components) {
                     lualine_a = {{
                         "mode",
-                        icons_enabled = true,
+                        fmt = function(_)
+                            return mode_msgs["_"]
+                        end,
+                        icons_enabled = false,
                         icon = other_icons.vim,
                     }},
-
-                    lualine_y = {
-                        function()
-                            return other_icons.bot .. " " .. (vim.lsp.get_active_clients()[1].name or "<No LSP>")
-                        end,
-                    },
-
-                    lualine_b = {
-                        { "branch" },
-                        {
-                            "diff",
-                            diff_color = {
-                                added = { fg = rose_pine.iris },
-                                modified = { fg = rose_pine.gold },
-                                removed = { fg = rose_pine.rose },
-                            },
-                            symbols = { removed = "–" },
-                        },
-                    },
-
-                    lualine_c = file_line,
-
-                    lualine_x = { diagnostic_line },
-
-                    lualine_z = {
-                        {
-                            "%l/%L",
-                            icons_enabled = true,
-                            icon = other_icons.line,
-                            color = { gui = "bold" },
-                            padding = { left = 1, right = 0 },
-                        }, {
-                            "%c",
-                            color = { gui = "italic" },
-                            padding = { left = 0, right = 1 },
-                        }
-                    },
                 },
+
+                sections = components ,
             })
         end,
     }

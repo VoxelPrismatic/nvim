@@ -42,4 +42,11 @@ return {
         "stevearc/conform.nvim",
         event = "BufEnter",
     },
+    {
+        "folke/neodev.nvim",
+        after = "nvim-lspconfig",
+        config = function()
+            require("neodev").setup()
+        end,
+    },
 }

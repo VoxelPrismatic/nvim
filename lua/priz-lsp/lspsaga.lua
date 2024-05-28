@@ -3,7 +3,7 @@ local keybinds = {
         "<cmd>Lspsaga hover_doc<CR>",
         "Get inline documentation",
     },
-    ["k"] = {
+    ["k<CR>"] = {
         "<cmd>Lspsaga term_toggle<CR>",
         "Toggle terminal",
     },
@@ -48,7 +48,7 @@ local keybinds = {
 return {
     {
         "nvimdev/lspsaga.nvim",
-        event = "LspAttach",
+        event = { "LspAttach", "VeryLazy" },
         config = function()
             require("lspsaga").setup({
                 ui = {
@@ -103,6 +103,9 @@ return {
                         name = "+Saga",
                         s = { name = "+Peek" }
                     },
+                    k = {
+                        name = "+Term",
+                    }
                 },
             })
         end,
