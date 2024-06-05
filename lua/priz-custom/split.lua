@@ -16,6 +16,7 @@ local keymaps = {
         "<cmd>vert rightb sp +bNext<CR>",
     },
 
+
     ["<leader>k<Up>"] = {
         "Add term above",
         "<cmd>hor abo term<CR>i",

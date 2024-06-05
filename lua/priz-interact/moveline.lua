@@ -1,14 +1,27 @@
-return {
+return { ---@type LazyPluginSpec
     "willothy/moveline.nvim",
     build = "make",
-    event = "UIEnter",
-    config = function()
-        local moveline = require("moveline")
-        vim.keymap.set("i", "<M-k>", moveline.up)
-        vim.keymap.set("i", "<M-j>", moveline.down)
-        vim.keymap.set("n", "<M-k>", moveline.up)
-        vim.keymap.set("n", "<M-j>", moveline.down)
-        vim.keymap.set("v", "<M-k>", moveline.block_up)
-        vim.keymap.set("v", "<M-j>", moveline.block_down)
-    end
+    lazy = true,
+    keys = {
+        {
+            "<M-k>", function() require("moveline").up() end,
+            mode = { "n", "i" },
+            desc = "Move line up"
+        },
+        {
+            "<M-j>", function() require("moveline").down() end,
+            mode = { "n", "i" },
+            desc = "Move line down"
+        },
+        {
+            "<M-k>", function() require("moveline").block_up() end,
+            mode = { "v" },
+            desc = "Move block up"
+        },
+        {
+            "<M-j>", function() require("moveline").block_down() end,
+            mode = { "v" },
+            desc = "Move block down"
+        },
+    },
 }

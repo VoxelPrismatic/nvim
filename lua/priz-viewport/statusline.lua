@@ -109,7 +109,7 @@ end
 return {
     {
         "akinsho/bufferline.nvim",
-        event = "VeryLazy",
+        event = "UIEnter",
         config = function()
             require("bufferline").setup({
                 options = {
@@ -125,10 +125,10 @@ return {
     {
         "nvim-lualine/lualine.nvim",
         name = "lualine",
-        event = "VeryLazy",
+        event = "UIEnter",
         config = function()
             local rose_pine = require("rose-pine.palette")
-            local devicons = require("nvim-web-devicons").setup({
+            require("nvim-web-devicons").setup({
                 override = {
                     __blank = {
                         icon = " ",
@@ -149,7 +149,7 @@ return {
 
                 lualine_y = {
                     function()
-                        local clients = vim.lsp.get_active_clients()
+                        local clients = vim.lsp.get_clients()
                         local selected = "nil"
                         local seconds = math.floor(vim.loop.gettimeofday() / 5)
                         if #clients > 0 then

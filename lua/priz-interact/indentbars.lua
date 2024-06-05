@@ -1,7 +1,5 @@
-return {
+return { ---@type LazyPluginSpec
     "nvimdev/indentmini.nvim",
-    event = "BufEnter",
-    config = function()
-        require("indentmini").setup()
-    end,
+    event = "LspAttach",
+    config = true,
 }

@@ -1,7 +1,7 @@
-return {
+return { ---@type LazyPluginSpec[]
     {
         "neovim/nvim-lspconfig",
-        lazy = { "LazyFile", "InsertEnter" },
+        lazy = true,
     },
     {
         "hrsh7th/nvim-cmp",
@@ -10,6 +10,7 @@ return {
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-path",
         },
+
         event = "InsertEnter",
         config = function()
             local cmp = require("cmp")
@@ -39,14 +40,9 @@ return {
         end,
     },
     {
-        "stevearc/conform.nvim",
-        event = "BufEnter",
-    },
-    {
         "folke/neodev.nvim",
-        after = "nvim-lspconfig",
-        config = function()
-            require("neodev").setup()
-        end,
+        lazy = false,
+        config = true,
+        priority = 500,
     },
 }

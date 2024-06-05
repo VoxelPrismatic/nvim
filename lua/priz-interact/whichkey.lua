@@ -1,6 +1,6 @@
-return {
+return { ---@type LazyPluginSpec
     "folke/which-key.nvim",
-    lazy = false,
+    lazy = true,
     config = function()
         local wk = require("which-key")
         wk.setup({
@@ -9,10 +9,8 @@ return {
             },
         })
         wk.register({
-            ["<leader>"] = {
-                s = {
-                    name = "+Split",
-                },
+            ["<leader>s"] = {
+                name = "+Split",
             },
         })
     end,

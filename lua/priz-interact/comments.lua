@@ -1,6 +1,21 @@
-return {
+return { ---@type LazyPluginSpec
     "numToStr/Comment.nvim",
-    event = "UIEnter",
+    lazy = true,
+    config = true,
+    keys = {
+        {
+            "<leader>/",
+            function() require("Comment.api").toggle.linewise.current() end,
+            mode = { "n", "v", "x" },
+            desc = "Comment line",
+        },
+        {
+            "<leader>]",
+            function() require("Comment.api").toggle.blockwise.current() end,
+            mode = { "n", "v", "x" },
+            desc = "Comment block",
+        },
+    },
     opts = {
         toggler = {
             line = "<leader>/",
@@ -10,7 +25,6 @@ return {
             line = "<leader>/",
             block = "<leader>]",
         },
-    },
-    init = function()
-    end,
+    }
 }
+

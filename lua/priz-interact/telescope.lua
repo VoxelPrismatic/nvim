@@ -1,72 +1,77 @@
----@diagnostic disable-next-line: undefined-global
-local vim = vim
-
-function PrizTelescopeLaunch(arg)
-    PrizCloseOil()
-    vim.cmd("Telescope " .. arg)
-end
-
-return {
-    {
-        "nvim-telescope/telescope-fzf-native.nvim",
-        build = "make",
-        event = "UIEnter",
-        after = "telescope.nvim",
-        config = function()
-            require("telescope").load_extension("fzf")
-        end,
-    },
-    {
-        "nvim-telescope/telescope.nvim",
-        cmd = "Telescope",
-        branch = "0.1.x",
-        dependencies = {
-            "nvim-lua/popup.nvim",
-            "nvim-lua/plenary.nvim",
-            "nvim-telescope/telescope-live-grep-args.nvim",
+return { ---@type LazyPluginSpec
+    "nvim-telescope/telescope.nvim",
+    cmd = "Telescope",
+    branch = "0.1.x",
+    lazy = true,
+    config = true,
+    dependencies = {
+        "nvim-lua/popup.nvim",
+        "nvim-lua/plenary.nvim",
+        "nvim-telescope/telescope-live-grep-args.nvim",
+        {
+            "nvim-telescope/telescope-fzf-native.nvim",
+            build = "make",
         },
-        config = function()
-            require("telescope").load_extension("live_grep_args")
-            require("telescope").setup({
-                extensions = {
-                    fzf = {
-                        fuzzy = true,
-                        override_generic_sorter = true,
-                        override_file_sorter = true,
-                        case_mode = "smart_case",
-                    },
-                },
-            })
-        end,
-        init = function()
-            require("which-key").register({
-                ["<leader>"] = {
-                    t = {
-                        name = "+Telescope",
-                    },
-                },
-            })
-            vim.keymap.set("n", "<leader>tf", "<cmd>lua PrizTelescopeLaunch(\"find_files\")<CR>", {
-                desc = "Find files",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("n", "<leader>tg", "<cmd>lua PrizTelescopeLaunch(\"live_grep_args\")<CR>", {
-                desc = "Live grep",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("n", "<leader>tb", "<cmd>lua PrizTelescopeLaunch(\"buffers\")<CR>", {
-                desc = "Find buffers",
-                noremap = true,
-                silent = true,
-            })
-            vim.keymap.set("n", "<leader>tt", "<cmd>lua PrizTelescopeLaunch(\"\")<CR>", {
-                desc = "Launch telescope",
-                noremap = true,
-                silent = true,
-            })
-        end,
+    },
+    opts = {
+        extentions = {
+            fzf = {
+                fuzzy = true,
+                override_generic_sorter = true,
+                override_file_sorter = true,
+                case_mode = "smart_case",
+            },
+            live_grep_args = {},
+        },
+    },
+    keys = {
+        {
+            "<leader>tf", function()
+                PrizCloseOil()
+                vim.cmd("Telescope find_files")
+            end,
+            mode = "n",
+            desc = "Find files",
+            noremap = true,
+            silent = true,
+        },
+        {
+            "<leader>tg", function()
+                PrizCloseOil()
+                vim.cmd("Telescope live_grep_args")
+            end,
+            mode = "n",
+            desc = "Live grep",
+            noremap = true,
+            silent = true,
+        },
+        {
+            "<leader>tb", function()
+                PrizCloseOil()
+                vim.cmd("Telescope buffers")
+            end,
+            mode = "n",
+            desc = "Find buffers",
+            noremap = true,
+            silent = true,
+        },
+        {
+            "<leader>tt", function()
+                PrizCloseOil()
+                vim.cmd("Telescope")
+            end,
+            mode = "n",
+            desc = "Launch telescope",
+            noremap = true,
+            silent = true,
+        },
+    },
+    init = function()
+        require("which-key").register({
+            ["<leader>t"] = {
+                name = "+Telescope",
+            },
+        })
+    end,
 
-    }
 }

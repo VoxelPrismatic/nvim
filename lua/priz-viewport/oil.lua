@@ -3,6 +3,7 @@ local vim = vim
 
 function PrizCloseOil()
     if vim.bo[0].filetype == "oil" then
+        require("oil").discard_all_changes()
         require("oil").close()
     end
 end
@@ -16,23 +17,23 @@ function PrizkeymapToggleOil()
     end
 end
 
-return {
+return { ---@type LazyPluginSpec
     "stevearc/oil.nvim",
-    lazy = false,
-    config = function()
-        require("oil").setup({
-            float = {
-                padding = 8,
-            },
-        })
-
-        vim.keymap.set("n", "<leader>n", ":lua PrizkeymapToggleOil()<CR>", {
-            desc = "Oil",
-            noremap = true,
-            silent = true
-        })
-    end,
     dependencies = {
         "nvim-tree/nvim-web-devicons",
+    },
+    lazy = false,
+    config = true,
+    cmd = "Oil",
+    opts = {
+        float = {
+            padding = 8,
+        },
+    },
+    keys = {
+        {
+            "<leader>n", PrizkeymapToggleOil,
+            desc = "Oil",
+        },
     },
 }

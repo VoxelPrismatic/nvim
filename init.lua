@@ -1,6 +1,3 @@
----@diagnostic disable-next-line: undefined-global
-local vim = vim
-
 vim.opt.number = true                   -- Show line numbers
 vim.opt.mouse = "a"                     -- Enable mouse
 vim.opt.ignorecase = true               -- Ignore case when searching
@@ -43,7 +40,3 @@ require("lazy").setup({
 
 -- Use system clipboard
 vim.opt.clipboard = "unnamedplus"
-
--- Enables transparent background on Konsole
-vim.cmd("highlight Normal guibg=none")
-

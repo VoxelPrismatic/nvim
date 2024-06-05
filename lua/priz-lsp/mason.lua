@@ -54,7 +54,7 @@ local required = {
     "html-lsp",
 }
 
-return {
+return { ---@type LazyPluginSpec[]
     {
         "williamboman/mason.nvim",
         name = "mason",
@@ -73,21 +73,23 @@ return {
     {
         "williamboman/mason-lspconfig.nvim",
         name = "mason-lspconfig",
-        config = function()
-            local lsp = require("mason-lspconfig")
-            lsp.setup({
-                ensure_installed = vim.tbl_keys(servers),
-                automatic_installation = true,
-            })
-            lsp.setup_handlers({
+        dependencies = {{ "williamboman/mason.nvim", name = "mason" }},
+        -- lazy = false,
+        -- priority = 300,
+        event = { "BufRead", "BufNewFile" },
+        config = true,
+        opts = {
+            ensure_installed = vim.tbl_keys(servers),
+            automatic_installation = true,
+            handlers = {
                 function(server_name)
                     require("lspconfig")[server_name].setup({
                         capabilities = capabilities,
                         settings = servers[server_name],
                         flags = { debounce_text_changes = 300 },
                     })
-                end,
-            })
-        end,
+                end
+            },
+        },
     },
 }

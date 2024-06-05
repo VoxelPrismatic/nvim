@@ -1,42 +1,60 @@
-return {
+return { ---@type LazyPluginSpec[]
     {
         "kevinhwang91/nvim-ufo",
-        event = { "VeryLazy" },
+        event = "LspAttach",
+        main = "ufo",
+        config = true,
         dependencies = {
             "kevinhwang91/promise-async",
+            "nvim-treesitter/nvim-treesitter",
         },
-        config = function()
+        opts = {
+            provider_selector = function(_, _, _)
+                return {"treesitter", "indent"}
+            end
+        },
+        keys = {
+            {
+                "zR", function() require("ufo").openAllFolds() end,
+                mode = "n",
+                desc = "Open all folds"
+            },
+            {
+                "zM", function() require("ufo").closeAllFolds() end,
+                mode = "n",
+                desc = "Close all folds"
+            },
+            {
+                "zq", "za",
+                mode = "n",
+                desc = "Toggle fold"
+            },
+        },
+        init = function()
             vim.o.foldcolumn = "0"  -- No fold column; difficult to make out relative line numbers
             vim.o.foldlevel = 99
             vim.o.foldlevelstart = 99
             vim.foldenable = true
-
-            vim.keymap.set("n", "zR", require("ufo").openAllFolds)
-            vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
-            vim.keymap.set("n", "zq", "za", { desc = "Toggle fold" })   -- za is too close to be comfortable
-
-            require("ufo").setup({
-                provider_selector = function(_, _, _)
-                    return {"treesitter", "indent"}
-                end
-            })
         end,
     },
 
     {
         "nvim-treesitter/nvim-treesitter",
-        event = { "VeryLazy" },
-        config = function()
-            require("nvim-treesitter.configs").setup({
-                ensure_installed = {
-                    "markdown",
-                    "markdown_inline",
-                },
-                auto_install = true,
-                indent = {
-                    enable = true,
-                },
-            })
-        end,
+        event = "LspAttach",
+        build = ":TSUpdate",
+        config = true,
+        opts = { ---@type TSConfig
+            auto_install = true,
+            sync_install = false,
+            ensure_installed = {
+                "markdown",
+                "markdown_inline",
+            },
+            indent = {
+                enable = true,
+            },
+            ignore_install = {},
+            modules = {},
+        },
     },
 }
