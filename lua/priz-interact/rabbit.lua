@@ -8,9 +8,10 @@ return { ---@type LazyPluginSpec
         mode = "n",
         desc = "Open Rabbit",
     }},
-    opts = { ---@type RabbitOptions
+    opts = { ---@type Rabbit.Options
         colors = {
-            term = { fg = "#34ab7e", italic = true },
+            term = { fg = "#40c9a2", italic = true },
+            message = { fg = "#8aaacd", italic = true, bold = true },
         },
         window = {
             plugin_name_position = "title",

@@ -1,19 +1,19 @@
 local keymaps = {
     ["<leader>s<Up>"] = {
         "Add split above",
-        "<cmd>hor abo sp +bNext<CR>",
+        "<cmd>hor abo sp<CR>",
     },
     ["<leader>s<Down>"] = {
         "Add split below",
-        "<cmd>hor bel sp +bNext<CR>",
+        "<cmd>hor bel sp<CR>",
     },
     ["<leader>s<Left>"] = {
         "Add split left",
-        "<cmd>vert lefta sp +bNext<CR>",
+        "<cmd>vert lefta sp<CR>",
     },
     ["<leader>s<Right>"] = {
         "Add split right",
-        "<cmd>vert rightb sp +bNext<CR>",
+        "<cmd>vert rightb sp<CR>",
     },
 
 
