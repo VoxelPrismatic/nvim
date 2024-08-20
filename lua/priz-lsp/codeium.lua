@@ -1,5 +1,5 @@
 return { ---@type LazyPluginSpec
-    "Exafunction/codeium.vim",
+    "voxelprismatic/codeium.vim",
     lazy = false,
     cmd = {
         "CodeiumEnable",

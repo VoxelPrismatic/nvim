@@ -1,3 +1,8 @@
+-- Because codeium thinks WSL = Windows
+if vim.fn.has("wsl") then
+    vim.g.codeium_os = "Linux"
+end
+
 vim.opt.number = true                   -- Show line numbers
 vim.opt.mouse = "a"                     -- Enable mouse
 vim.opt.ignorecase = true               -- Ignore case when searching
@@ -11,8 +16,6 @@ local _tab = 4                          -- Set tab width
 vim.opt.tabstop = _tab                  -- Tab stops
 vim.opt.shiftwidth = _tab               -- How far to indent
 vim.opt.expandtab = true                -- Use spaces instead of tabs
-
-vim.opt.shell = "/bin/zsh"
 
 vim.opt.listchars = {
     trail = "·",                        -- Trailing spaces
@@ -40,3 +43,4 @@ require("lazy").setup({
 
 -- Use system clipboard
 vim.opt.clipboard = "unnamedplus"
+

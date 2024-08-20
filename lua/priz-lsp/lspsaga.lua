@@ -77,16 +77,12 @@ return { ---@type LazyPluginSpec
         },
     },
     init = function()
-        require("which-key").register({
-            ["<leader>"] = {
-                l = {
-                    name = "+Saga",
-                    s = { name = "+Peek" }
-                },
-                k = {
-                    name = "+Term",
-                }
-            },
+        require("which-key").add({
+            "<leader>l",
+            group = "Saga",
+        }, {
+            "<leader>k",
+            group = "+Saga"
         })
     end,
 }

@@ -8,10 +8,9 @@ return { ---@type LazyPluginSpec
                 separator = "~",
             },
         })
-        wk.register({
-            ["<leader>s"] = {
-                name = "+Split",
-            },
+        wk.add({
+            "<leader>s",
+            name = "Split",
         })
     end,
     init = function()
