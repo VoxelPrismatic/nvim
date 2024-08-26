@@ -1,8 +1,3 @@
--- Because codeium thinks WSL = Windows
-if vim.fn.has("wsl") then
-    vim.g.codeium_os = "Linux"
-end
-
 vim.opt.number = true                   -- Show line numbers
 vim.opt.mouse = "a"                     -- Enable mouse
 vim.opt.ignorecase = true               -- Ignore case when searching

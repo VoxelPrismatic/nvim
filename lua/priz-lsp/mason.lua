@@ -54,6 +54,40 @@ local required = {
     "html-lsp",
 }
 
+local running = true
+
+function ToggleHarperLs()
+    if not running then
+        running = true
+        vim.print("Starting Harper LS")
+        require("lspconfig")["harper_ls"].setup({
+            capabilities = capabilities,
+            settings = servers["harper_ls"],
+            flags = { debounce_text_changes = 300 },
+        })
+        return
+    end
+
+    for _, client in ipairs(vim.lsp.get_clients()) do
+        if client.name == "harper_ls" then
+            vim.print("Killing Harper LS")
+            client.stop()
+            if not pcall(vim.cmd, "edit") then
+                vim.print("Save and run \\lh again to kill harper_ls")
+                return
+            end
+            running = false
+            return
+        end
+    end
+end
+
+vim.keymap.set("n", "<leader>lh", ToggleHarperLs, {
+    desc = "Harper LS",
+    noremap = true,
+    silent = true
+})
+
 return { ---@type LazyPluginSpec[]
     {
         "williamboman/mason.nvim",
