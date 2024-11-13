@@ -1,3 +1,10 @@
+function CloseBuffer()
+    local bufnr = vim.api.nvim_get_current_buf()
+    vim.cmd("w")
+    require("oil").open()
+    vim.api.nvim_buf_delete(bufnr, { force = true })
+end
+
 -- Set leader key
 vim.g.mapleader = "\\"
 
@@ -9,7 +16,7 @@ vim.keymap.set("n", "<leader>b", "<cmd>enew<CR>", {
 })
 
 -- Close current buffer
-vim.keymap.set("n", "<leader>c", "<cmd>bd<CR>", {
+vim.keymap.set("n", "<leader>c", CloseBuffer, {
     desc = "Close buffer",
     noremap = true,
     silent = true
@@ -36,6 +43,5 @@ for i = 1, 12 do
         silent = true
     })
 end
-
 
 return {}

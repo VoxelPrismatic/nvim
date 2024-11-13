@@ -52,6 +52,8 @@ local required = {
     "gomodifytags",
     "gopls",
     "html-lsp",
+    "templ",
+    "htmx-lsp",
 }
 
 local running = true

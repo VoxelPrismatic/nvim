@@ -22,7 +22,8 @@ local function toggle_background(set, timer)
 end
 
 return { ---@type LazyPluginSpec
-    "voxelprismatic/rosepine-neovim",
+    "voxelprismatic/sakurapine",
+    dir = "/home/priz/Desktop/git/sakurapine",
     name = "rose-pine",
     priority = 1000,
     lazy = false,
