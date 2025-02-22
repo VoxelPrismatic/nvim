@@ -21,9 +21,8 @@ local function toggle_background(set, timer)
     end
 end
 
-return { ---@type LazyPluginSpec
+local sakura_conf = { ---@type LazyPluginSpec
     "voxelprismatic/sakurapine",
-    dir = "/home/priz/Desktop/git/sakurapine",
     name = "rose-pine",
     priority = 1000,
     lazy = false,
@@ -73,3 +72,9 @@ return { ---@type LazyPluginSpec
 }
 
 
+local sakura_dir = "/home/priz/Desktop/git/sakurapine"
+if vim.fn.glob(sakura_dir .. "/*") ~= "" then
+    sakura_conf.dir = sakura_dir
+end
+
+return sakura_conf

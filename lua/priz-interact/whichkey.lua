@@ -9,8 +9,9 @@ return { ---@type LazyPluginSpec
             },
         })
         wk.add({
-            "<leader>s",
-            name = "Split",
+            { "<leader>s", name = "Split Win" },
+            { "<leader>S", name = "Copy Buf" },
+            { "<leader>k", name = "Term" },
         })
     end,
     init = function()

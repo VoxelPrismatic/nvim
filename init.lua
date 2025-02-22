@@ -10,7 +10,7 @@ vim.opt.list = true                     -- Show special characters
 local _tab = 4                          -- Set tab width
 vim.opt.tabstop = _tab                  -- Tab stops
 vim.opt.shiftwidth = _tab               -- How far to indent
-vim.opt.expandtab = true                -- Use spaces instead of tabs
+vim.opt.expandtab = false               -- Use tabs instead of spaces
 
 vim.opt.listchars = {
     trail = "·",                        -- Trailing spaces
@@ -33,6 +33,7 @@ require("lazy").setup({
     { import = "priz-viewport" },
     { import = "priz-lsp" },
     { import = "priz-interact" },
+    { import = "priz-lang" },
 })
 
 

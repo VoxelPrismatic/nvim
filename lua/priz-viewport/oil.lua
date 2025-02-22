@@ -26,6 +26,8 @@ return { ---@type LazyPluginSpec
     config = true,
     cmd = "Oil",
     opts = {
+        skip_confirm_for_simple_edits = true,
+        watch_for_changes = true,
         float = {
             padding = 8,
         },
