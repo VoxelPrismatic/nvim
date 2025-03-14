@@ -31,20 +31,26 @@ end
 return { ---@type LazyPluginSpec
 	"voxelprismatic/rabbit.nvim",
 	dir = "/home/priz/Desktop/git/rabbit.nvim",
+	-- dir = "/home/priz/Desktop/git/rabbit.legacy",
 	lazy = false,
 	config = true,
 	cmd = "Rabbit",
-	keys = {{
-		"<leader>r", function() require("rabbit").Window("history") end,
-		mode = "n",
-		desc = "Open Rabbit",
-	}},
+	keys = {
+		{
+			"<leader>r",
+			function()
+				require("rabbit.term.listing").spawn("history")
+			end,
+			mode = "n",
+			desc = "Open Rabbit",
+		},
+	},
 	opts = { ---@type Rabbit.Options
 		-- path_key = "default",
-		colors = {
-			term = { fg = "#40c9a2", italic = true },
-			message = { fg = "#8aaacd", italic = true, bold = true },
-		},
+		-- colors = {
+		-- 	term = { fg = "#40c9a2", italic = true },
+		-- 	message = { fg = "#8aaacd", italic = true, bold = true },
+		-- },
 		window = {
 			plugin_name_position = "title",
 		},
@@ -54,8 +60,8 @@ return { ---@type LazyPluginSpec
 					path_key = git_path_key,
 					conflict_copy = "move",
 					conflict_parent = "move",
-				}
-			}
-		}
+				},
+			},
+		},
 	},
 }

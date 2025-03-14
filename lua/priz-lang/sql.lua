@@ -11,19 +11,19 @@ local function fmt_sql()
 	local columns = {}
 	-- Check if it's an INSERT statement
 	if not sql:match("%s*[iI][nN][sS][eE][rR][tT]%s+[iI][nN][tT][oO]") then
-		return nil, "Not a valid INSERT statement"
+		error("Not a valid INSERT statement")
 	end
 
 	-- Extract table name
 	local table_name = sql:match("%s*[iI][nN][sS][eE][rR][tT]%s+[iI][nN][tT][oO]%s*([^%s%()]+)")
 	if not table_name then
-		return nil, "Could not parse table name"
+		error("Could not parse table name")
 	end
 
 	-- Extract column names between parentheses after table name
 	local columns_part = sql:match("%(%s*([^%)]+)%s*%)%s*[vV][aA][lL][uU][eE][sS]")
 	if not columns_part then
-		return nil, "Could not parse column names"
+		error("Could not parse column names")
 	end
 
 	-- Split column names and trim whitespace
@@ -37,7 +37,7 @@ local function fmt_sql()
 	-- Extract values part (everything after VALUES)
 	local values_part = sql:match("[vV][aA][lL][uU][eE][sS]%s*(.*)$")
 	if not values_part then
-		return nil, "Could not parse values"
+		error("Could not find the VALUES keyword")
 	end
 
 	local values = {}

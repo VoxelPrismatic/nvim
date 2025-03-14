@@ -1,14 +1,19 @@
 return { ---@type LazyPluginSpec
-    "Exafunction/codeium.vim",
-    lazy = false,
-    cmd = {
-        "CodeiumEnable",
-        "CodeiumDisable",
-        "CodeiumToggle",
-    },
-    keys = {
-        "<S-Tab>", "<cmd>CodeiumToggle<CR> <Backspace>",
-        mode = "i",
-        desc = "Toggle codeium",
-    },
+	"Exafunction/codeium.nvim",
+	dependencies = {
+		"nvim-lua/plenary.nvim",
+		"hrsh7th/nvim-cmp",
+	},
+	config = true,
+	opts = {
+		enable_chat = true,
+		virtual_text = {
+			enabled = true,
+			idle_delay = 50,
+			key_bindings = {
+				accept = "<Tab>",
+				accept_line = "<F10>",
+			},
+		},
+	},
 }
