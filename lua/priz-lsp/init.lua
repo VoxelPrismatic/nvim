@@ -8,9 +8,7 @@ vim.debug = {
 			if v.scope ~= "win" then
 				goto continue
 			end
-			do
-				ret[k] = opts[k]
-			end
+			ret[k] = opts[k]
 			::continue::
 		end
 
@@ -25,9 +23,7 @@ vim.debug = {
 			if v.scope ~= "buf" then
 				goto continue
 			end
-			do
-				ret[k] = opts[k]
-			end
+			ret[k] = opts[k]
 			::continue::
 		end
 
