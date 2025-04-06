@@ -34,16 +34,11 @@ vim.keymap.set("n", "<leader>lh", ToggleHarperLs, {
 	silent = true,
 })
 
-vim.lsp.config("*", {
-	root_markers = { ".git" },
-})
-
 ---@type { [string]: boolean }
 local types = {}
 
 MASON = {
 	registry = nil,
-	packages = nil,
 	mapping = nil,
 	reverse_mapping = nil,
 	lspconfig = nil,
@@ -53,22 +48,42 @@ MASON = {
 	langs = {},
 }
 
+---@type { [string]: integer }
+local launch = {}
+
 vim.api.nvim_create_autocmd("FileType", {
 	callback = function(evt)
-		if types[evt.match] or MASON.langs[evt.match] == nil then
+		if types[evt.match] then
+			return
+		elseif MASON.langs[evt.match] == nil then
+			types[evt.match] = true
 			return
 		end
 
 		local lspname = vim.tbl_keys(MASON.langs[evt.match])[1]
 		local mason_name = MASON.reverse_mapping[lspname] or lspname
-		vim.print("Installing " .. mason_name)
-		MASON.registry.get_package(mason_name):install()
-		local lsp = MASON.nvimlsp[lspname]
-		lsp.setup({})
-		lsp.launch(evt.buf)
+		launch[mason_name] = evt.buf
+		MASON.registry.get_package(mason_name):install({ debug = true, force = true })
 		types[evt.match] = true
 	end,
 })
+
+local ignore = {
+	"grammarly",
+}
+
+local manual_link = {
+	["c3-lsp"] = "c3_lsp",
+}
+
+local function get_lspname(pkgname)
+	local lspname = MASON.mapping[pkgname] or pkgname
+	if manual_link[lspname] then
+		lspname = manual_link[lspname]
+		MASON.reverse_mapping[lspname] = pkgname
+	end
+	return lspname
+end
 
 return { ---@type LazyPluginSpec[]
 	{
@@ -89,9 +104,9 @@ return { ---@type LazyPluginSpec[]
 			{ "williamboman/mason.nvim", name = "mason" },
 			{ "neovim/nvim-lspconfig" },
 		},
-		-- lazy = false,
+		lazy = false,
 		-- priority = 300,
-		event = { "BufRead", "BufNewFile", "FileType" },
+		-- event = { "BufRead", "BufNewFile", "FileType" },
 		config = function(_)
 			MASON.nvimlsp = require("lspconfig")
 			MASON.lspconfig = require("mason-lspconfig")
@@ -102,13 +117,24 @@ return { ---@type LazyPluginSpec[]
 
 			MASON.registry = require("mason-registry")
 			MASON.registry.update()
-			MASON.packages = MASON.registry.get_all_package_specs()
+			MASON.registry:on("package:install:success", function(pkg)
+				vim.schedule(function()
+					if launch[pkg.name] == nil then
+						return
+					end
+					local lsp = MASON.nvimlsp[get_lspname(pkg.name)]
+					lsp.setup({})
+					lsp.launch(launch[pkg.name])
+					launch[pkg.name] = nil
+				end)
+			end)
+			local packages = MASON.registry.get_all_package_specs()
 
 			local mapping = require("mason-lspconfig.mappings.server")
 			MASON.mapping = mapping.package_to_lspconfig
 			MASON.reverse_mapping = mapping.lspconfig_to_package
 
-			for _, pkg in ipairs(MASON.packages) do
+			for _, pkg in ipairs(packages) do
 				local is_lsp = false
 				for _, cat in ipairs(pkg.categories) do
 					if cat == "LSP" then
@@ -122,7 +148,13 @@ return { ---@type LazyPluginSpec[]
 					goto continue
 				end
 
-				local lspname = MASON.mapping[pkg.name] or pkg.name
+				local lspname = get_lspname(pkg.name)
+				for _, ignored in ipairs(ignore) do
+					if ignored == lspname then
+						goto continue
+					end
+				end
+
 				local ok = pcall(require, "lspconfig.configs." .. lspname)
 
 				if not ok then
