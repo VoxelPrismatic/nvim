@@ -30,50 +30,47 @@ vim.debug = {
 		return ret
 	end,
 }
+
 return { ---@type LazyPluginSpec[]
 	{
 		"neovim/nvim-lspconfig",
 		lazy = true,
 	},
 	{
-		"hrsh7th/nvim-cmp",
-		dependencies = {
-			"hrsh7th/cmp-nvim-lsp",
-			"hrsh7th/cmp-buffer",
-			"hrsh7th/cmp-path",
-		},
-
+		"saghen/blink.cmp",
+		version = "1.*",
 		event = "InsertEnter",
-		config = function()
-			local cmp = require("cmp")
-			cmp.setup({
-				snippet = {
-					expand = function(_) end,
+		opts = { ---@type blink.cmp.Config
+			sources = {
+				default = { "lazydev", "lsp", "path", "buffer" },
+				providers = {
+					lazydev = {
+						name = "LazyDev",
+						module = "lazydev.integrations.blink",
+						score_offset = 100,
+					},
 				},
-				mapping = {
-					["<C-d>"] = cmp.mapping.scroll_docs(-4),
-					["<C-f>"] = cmp.mapping.scroll_docs(4),
-					["<C-Space>"] = cmp.mapping.complete(),
-					["<F4>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-					["<F3>"] = cmp.mapping.close(),
-					["<F2>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-					["<F1>"] = cmp.mapping.confirm({
-						behavior = cmp.ConfirmBehavior.Insert,
-						select = true,
-					}),
+			},
+			completion = {
+				documentation = {
+					auto_show = true,
 				},
-				sources = {
-					{ name = "nvim_lsp" },
-					{ name = "buffer" },
-					{ name = "path" },
-				},
-			})
-		end,
+			},
+			keymap = {
+				preset = "none",
+				["<S-Up>"] = { "select_prev", "fallback" },
+				["<S-Down>"] = { "select_next", "fallback" },
+				["<F1>"] = { "accept", "fallback" },
+			},
+		},
 	},
 	{
-		"folke/neodev.nvim",
-		lazy = false,
-		config = true,
-		priority = 500,
+		"folke/lazydev.nvim",
+		ft = "lua",
+		opts = {
+			library = {
+				{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+			},
+		},
 	},
 }

@@ -76,12 +76,12 @@ local other_icons = {
 	bot = "󰮯",
 	line = "",
 	sleep = "󰤄",
-	term = "",
+	term = "",
 	cur = "󰇀",
 	zap = "󱐋",
 	more = "",
 	copilot = "",
-	copilot_nil = "",
+	copilot_nil = "󰎍",
 }
 
 local timer_ani = {
@@ -143,6 +143,8 @@ return {
 	{
 		"akinsho/bufferline.nvim",
 		event = "UIEnter",
+		enabled = false,
+		disabled = true,
 		config = function()
 			require("bufferline").setup({
 				options = {
@@ -185,9 +187,11 @@ return {
 				lualine_y = {
 					{
 						function()
-							local clients = vim.lsp.get_clients()
+							local clients = vim.lsp.get_clients({
+								bufnr = vim.api.nvim_get_current_buf(),
+							})
 							local selected = "nil"
-							local seconds = math.floor(vim.loop.gettimeofday() / 5)
+							local seconds = math.floor(vim.uv.gettimeofday() / 5)
 							if #clients > 0 then
 								selected = clients[math.fmod(seconds, #clients) + 1].name
 							end
@@ -202,7 +206,7 @@ return {
 							end
 							local codeium = require("codeium.virtual_text").status_string():gsub("%s+", "")
 							if codeium == "*" then
-								local ms = math.floor(vim.loop.hrtime() / 1000 / 1000 / 100)
+								local ms = math.floor(vim.uv.hrtime() / 1000 / 1000 / 100)
 								return timer_ani[math.fmod(ms, #timer_ani) + 1]
 							elseif codeium == "0" then
 								return other_icons.copilot_nil

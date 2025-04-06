@@ -1,27 +1,25 @@
 return { ---@type LazyPluginSpec
-    "NvChad/nvim-colorizer.lua",
-    main = "colorizer",
-    lazy = false,
-    config = true,
-    opts = { ---@type ColorizerOpts
-        filetypes = { "*" },
-        user_default_options = {
-            RGB = true,
-            RRGGBB = true,
-            names = false,
-            mode = "background",
-            rgb_fn = true,
-            hsl_fn = true,
-        }
-    },
+	"NvChad/nvim-colorizer.lua",
+	main = "colorizer",
+	event = "BufReadPre",
+	config = true,
+	opts = { ---@type ColorizerOpts
+		filetypes = { "*" },
+		user_default_options = {
+			RGB = true,
+			RRGGBB = true,
+			names = false,
+			mode = "background",
+			rgb_fn = true,
+			hsl_fn = true,
+		},
+	},
 }
-
 
 ---@class ColorizerOpts
 ---@field filetypes? ColorizerStringOrOpts[]
 ---@field buftypes? ColorizerStringOrOpts[] All the sub-options of filetypes apply to buftypes
 ---@field user_default_options? ColorizerTypeOpts
-
 
 ---@class ColorizerTypeOpts
 ---@field RGB? boolean #RGB hex codes
@@ -39,10 +37,8 @@ return { ---@type LazyPluginSpec
 ---@field virtualtext? string The character used if mode=virtualtext
 ---@field always_update? boolean Update color values even if buffer is not focused; eg cmp_menu or cmp_docs
 
-
 ---@class ColorizerSassOpts
 ---@field enable boolean
 ---@field parsers string[]
-
 
 ---@alias ColorizerStringOrOpts string | ColorizerTypeOpts
