@@ -28,61 +28,94 @@ function ToggleHarperLs()
 	end
 end
 
+vim.diagnostic.config({
+	virtual_text = true,
+	virtual_lines = {
+		current_line = true,
+	},
+})
+
 vim.keymap.set("n", "<leader>lh", ToggleHarperLs, {
 	desc = "Harper LS",
 	noremap = true,
 	silent = true,
 })
 
----@type { [string]: boolean }
-local types = {}
-
-MASON = {
-	registry = nil,
-	mapping = nil,
-	reverse_mapping = nil,
-	lspconfig = nil,
-	nvimlsp = nil,
-
-	---@type { [string]: { [string]: boolean } }
-	langs = {},
+-- Run updates on these packages
+---@type table<string, string | false>
+local updateable = {
+	grammarly = false, -- Ignore Grammarly
 }
 
----@type { [string]: integer }
-local launch = {}
+-- Do not bind multiple LSPs to the same filetype
+---@type table<string, integer>
+local autocmds = {}
 
-vim.api.nvim_create_autocmd("FileType", {
-	callback = function(evt)
-		if types[evt.match] then
-			return
-		elseif MASON.langs[evt.match] == nil then
-			types[evt.match] = true
-			return
-		end
-
-		local lspname = vim.tbl_keys(MASON.langs[evt.match])[1]
-		local mason_name = MASON.reverse_mapping[lspname] or lspname
-		launch[mason_name] = evt.buf
-		MASON.registry.get_package(mason_name):install({ debug = true, force = true })
-		types[evt.match] = true
-	end,
-})
-
-local ignore = {
-	"grammarly",
-}
-
+-- Mason Lsp Config is not complete
+---@type table<string, string>
 local manual_link = {
 	["c3-lsp"] = "c3_lsp",
 }
 
-local function get_lspname(pkgname)
-	local lspname = MASON.mapping[pkgname] or pkgname
-	if manual_link[lspname] then
-		lspname = manual_link[lspname]
-		MASON.reverse_mapping[lspname] = pkgname
+local GENERIC_THRESHOLD = 8
+
+local nvim_lsp ---@type table<string, table>
+local mason_lsp
+local mapping ---@type { lspconfig_to_package: table<string, string>, package_to_lspconfig: table<string, string>}
+local registry ---@type MasonRegistry
+
+---@param lsp_name string LSP name, as found in lspconfig
+local function bind_lsp(lsp_name)
+	---@type boolean | string | Package
+	local pkg = updateable[lsp_name]
+	if type(pkg) == "string" then
+		-- Auto-update
+		pkg = registry.get_package(pkg)
+		pkg:check_new_version(function(_ok, version)
+			if _ok and version.current_version ~= version.latest_version then
+				pkg:install()
+			end
+		end)
+		return
+	elseif pkg ~= nil then
+		return
 	end
-	return lspname
+
+	local lsp = nvim_lsp[lsp_name]
+	local fts = lsp.config_def ~= nil and lsp.config_def.default_config.filetypes or {}
+	-- Generic LSP like harper_ls, not specific to language
+	if #fts > GENERIC_THRESHOLD or #fts == 0 then
+		return
+	end
+
+	local mason_name = mapping.lspconfig_to_package[lsp_name] or lsp_name
+	pkg = registry.get_package(mason_name)
+	-- Generic LSP like harper_ls, not specific to language
+	if #pkg.spec.languages > GENERIC_THRESHOLD then
+		return
+	end
+
+	local buf_fts = {}
+	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+		table.insert(buf_fts, vim.bo[bufnr].filetype)
+	end
+
+	-- Install the first LSP for each filetype
+	for _, ft in ipairs(fts) do
+		if autocmds[ft] ~= nil then
+			-- pass
+		elseif vim.tbl_contains(buf_fts, ft) then
+			pkg:install()
+		else
+			autocmds[ft] = vim.api.nvim_create_autocmd("FileType", {
+				pattern = ft,
+				callback = function()
+					pkg:install()
+				end,
+				once = true,
+			})
+		end
+	end
 end
 
 return { ---@type LazyPluginSpec[]
@@ -105,95 +138,54 @@ return { ---@type LazyPluginSpec[]
 			{ "neovim/nvim-lspconfig" },
 		},
 		lazy = false,
-		-- priority = 300,
-		-- event = { "BufRead", "BufNewFile", "FileType" },
 		config = function(_)
-			MASON.nvimlsp = require("lspconfig")
-			MASON.lspconfig = require("mason-lspconfig")
-			MASON.lspconfig.setup({
+			nvim_lsp = require("lspconfig")
+			mason_lsp = require("mason-lspconfig")
+			mapping = require("mason-lspconfig.mappings.server")
+			registry = require("mason-registry")
+
+			for mason_name, lsp_name in pairs(manual_link) do
+				mapping.package_to_lspconfig[mason_name] = lsp_name
+				mapping.lspconfig_to_package[lsp_name] = mason_name
+			end
+
+			mason_lsp.setup({
 				automatic_installation = true,
 				ensure_installed = {},
 			})
 
-			MASON.registry = require("mason-registry")
-			MASON.registry.update()
-			MASON.registry:on("package:install:success", function(pkg)
-				vim.schedule(function()
-					if launch[pkg.name] == nil then
-						return
-					end
-					local lsp = MASON.nvimlsp[get_lspname(pkg.name)]
+			mason_lsp.setup_handlers({
+				function(lsp_name)
+					local lsp = nvim_lsp[lsp_name]
+					updateable[lsp_name] = mapping.lspconfig_to_package[lsp_name] or lsp_name
 					lsp.setup({})
-					lsp.launch(launch[pkg.name])
-					launch[pkg.name] = nil
-				end)
-			end)
-			local packages = MASON.registry.get_all_package_specs()
-
-			local mapping = require("mason-lspconfig.mappings.server")
-			MASON.mapping = mapping.package_to_lspconfig
-			MASON.reverse_mapping = mapping.lspconfig_to_package
-
-			for _, pkg in ipairs(packages) do
-				local is_lsp = false
-				for _, cat in ipairs(pkg.categories) do
-					if cat == "LSP" then
-						is_lsp = true
-						break
+					local fts = lsp.config_def ~= nil and lsp.config_def.default_config.filetypes or {}
+					if #fts < GENERIC_THRESHOLD then
+						for _, ft in ipairs(fts) do
+							autocmds[ft] = 0
+						end
 					end
-				end
-
-				if not is_lsp or pkg.name == nil then
-					-- Not an LSP
-					goto continue
-				end
-
-				local lspname = get_lspname(pkg.name)
-				for _, ignored in ipairs(ignore) do
-					if ignored == lspname then
-						goto continue
-					end
-				end
-
-				local ok = pcall(require, "lspconfig.configs." .. lspname)
-
-				if not ok then
-					-- LSP doesn't exist
-					goto continue
-				end
-
-				local lspconfig = MASON.nvimlsp[lspname]
-				local is_installed = MASON.registry.is_installed(pkg.name)
-				local fts = lspconfig.config_def.default_config.filetypes or {}
-
-				if is_installed then
-					lspconfig.setup({})
-				end
-
-				if #fts >= 8 or #pkg.languages >= 8 or pkg.deprecation then
-					-- These are not LSPs (eg grammar checkers)
-					goto continue
-				end
-
-				for _, ft in ipairs(fts) do
-					-- LspConfig exists; do not try to install new LSPs
-					types[ft] = types[ft] or is_installed
-					if MASON.langs[ft] == nil then
-						MASON.langs[ft] = { [lspname] = is_installed }
-					else
-						MASON.langs[ft][lspname] = is_installed
-					end
-				end
-
-				::continue::
-			end
-
-			vim.diagnostic.config({
-				virtual_text = true,
-				virtual_lines = {
-					current_line = true,
-				},
+				end,
 			})
+
+			-- Launch LSP immediately upon installation
+			registry:on(
+				"package:install:success",
+				vim.schedule_wrap(function(pkg)
+					local lsp = nvim_lsp[mapping.package_to_lspconfig[pkg.name] or pkg.name]
+					lsp.setup({})
+					lsp.launch()
+				end)
+			)
+
+			registry.update(vim.schedule_wrap(function(ok, msg)
+				if not ok then
+					error(msg)
+				end
+				for _, lsp_name in ipairs(mason_lsp.get_available_servers()) do
+					bind_lsp(lsp_name)
+				end
+			end))
 		end,
 	},
 }

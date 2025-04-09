@@ -54,22 +54,68 @@ return { ---@type LazyPluginSpec[]
 			completion = {
 				documentation = {
 					auto_show = true,
+					window = {
+						border = "padded",
+					},
+				},
+				menu = {
+					draw = {
+						columns = {
+							{ "kind_icon", gap = 1 },
+							{ "label", "label_description", gap = 1 },
+						},
+						components = {
+							kind_icon = {
+								highlight = function(ctx)
+									return ctx.kind_hl
+								end,
+							},
+						},
+					},
 				},
 			},
 			keymap = {
 				preset = "none",
-				["<S-Up>"] = { "select_prev", "fallback" },
-				["<S-Down>"] = { "select_next", "fallback" },
-				["<F1>"] = { "accept", "fallback" },
+				["<S-Up>"] = { "show", "select_prev", "fallback" },
+				["<S-Down>"] = { "show", "select_next", "fallback" },
+				["<F1>"] = { "show", "accept", "fallback" },
+				["<F2>"] = { "show", "hide", "fallback" },
 			},
 		},
+		config = function(config)
+			require("blink.cmp").setup(config.opts)
+			local palette = require("rose-pine.palette")
+			require("rabbit.term.highlight").apply({
+				BlinkCmpLabelDeprecated = {
+					force = true,
+					fg = palette.love,
+					strikethrough = true,
+				},
+				BlinkCmpKindMethod = {
+					force = true,
+					fg = palette.love,
+					bold = true,
+				},
+				BlinkCmpKindFunction = {
+					force = true,
+					link = "BlinkCmpKindMethod",
+				},
+				BlinkCmpConstructor = {
+					force = true,
+					fg = palette.iris,
+					bold = true,
+				},
+			})
+		end,
 	},
 	{
 		"folke/lazydev.nvim",
 		ft = "lua",
-		opts = {
+		config = true,
+		opts = { ---@type lazydev.Config
 			library = {
 				{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+				"LazyVim",
 			},
 		},
 	},

@@ -28,10 +28,16 @@ local function git_path_key()
 	return path
 end
 
+---@type string?
+local dir = "/home/priz/Desktop/git/rabbit.nvim"
+if vim.uv.fs_stat(tostring(dir)) == nil then
+	dir = nil
+end
+
 return { ---@type LazyPluginSpec
 	"voxelprismatic/rabbit.nvim",
-	dir = "/home/priz/Desktop/git/rabbit.nvim",
-	-- dir = "/home/priz/Desktop/git/rabbit.legacy",
+	dir = dir,
+	branch = "rewrite",
 	lazy = false,
 	config = true,
 	cmd = "Rabbit",

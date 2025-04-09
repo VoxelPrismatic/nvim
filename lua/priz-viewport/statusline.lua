@@ -61,6 +61,7 @@ local function lua_filename(fn, _)
 	elseif vim.bo.filetype:len() > 0 then
 		return vim.bo.filetype .. mod
 	end
+
 	return "#nil" .. mod
 end
 
@@ -126,16 +127,8 @@ local mode_msgs = {
 }
 
 local function spread(template)
-	local result = {}
-	for key, value in pairs(template) do
-		result[key] = value
-	end
-
-	return function(table)
-		for key, value in pairs(table) do
-			result[key] = value
-		end
-		return result
+	return function(new)
+		return vim.tbl_deep_extend("force", template, new)
 	end
 end
 
@@ -191,7 +184,7 @@ return {
 								bufnr = vim.api.nvim_get_current_buf(),
 							})
 							local selected = "nil"
-							local seconds = math.floor(vim.uv.gettimeofday() / 5)
+							local seconds = math.floor(vim.uv.gettimeofday() / 2)
 							if #clients > 0 then
 								selected = clients[math.fmod(seconds, #clients) + 1].name
 							end
