@@ -1,6 +1,14 @@
-local formatters = {
-	lua = "stylua --syntax=LuaJit",
+local exe = {
+	stylua = "stylua --syntax=LuaJIT",
+	clang_format = "clang-format --style=file -i",
 }
+
+local formatters = {
+	lua = exe.stylua,
+	c = exe.clang_format,
+	java = exe.clang_format,
+}
+
 -- Delete trailing spaces on save
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = { "*" },

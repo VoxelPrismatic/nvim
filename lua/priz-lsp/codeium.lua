@@ -1,5 +1,6 @@
 return { ---@type LazyPluginSpec
-	"Exafunction/codeium.nvim",
+	"Exafunction/windsurf.nvim",
+	name = "codeium.nvim",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 	},

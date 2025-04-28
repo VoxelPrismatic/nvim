@@ -29,7 +29,9 @@ return {
 	config = function()
 		require("go").setup({
 			diagnostic = {
-				virtual_text = false,
+				virtual_text = {
+					current_line = false,
+				},
 			},
 		})
 		require("nvim-treesitter.configs").setup({

@@ -29,7 +29,9 @@ function ToggleHarperLs()
 end
 
 vim.diagnostic.config({
-	virtual_text = true,
+	virtual_text = {
+		current_line = false,
+	},
 	virtual_lines = {
 		current_line = true,
 	},
@@ -63,6 +65,7 @@ local nvim_lsp ---@type table<string, table>
 local mason_lsp
 local mapping ---@type { lspconfig_to_package: table<string, string>, package_to_lspconfig: table<string, string>}
 local registry ---@type MasonRegistry
+local mason_dap
 
 ---@param lsp_name string LSP name, as found in lspconfig
 local function bind_lsp(lsp_name)
@@ -120,29 +123,25 @@ end
 
 return { ---@type LazyPluginSpec[]
 	{
-		"williamboman/mason.nvim",
-		name = "mason",
-		build = ":MasonUpdate",
-		config = true,
-		opts = { ---@type MasonSettings
-			pip = {
-				upgrade_pip = true,
-			},
-		},
-	},
-	{
 		"williamboman/mason-lspconfig.nvim",
 		name = "mason-lspconfig",
 		dependencies = {
 			{ "williamboman/mason.nvim", name = "mason" },
 			{ "neovim/nvim-lspconfig" },
+			{ "jay-babu/mason-nvim-dap.nvim" },
 		},
 		lazy = false,
 		config = function(_)
+			require("mason").setup({
+				pip = {
+					upgrade_pip = true,
+				},
+			})
 			nvim_lsp = require("lspconfig")
 			mason_lsp = require("mason-lspconfig")
 			mapping = require("mason-lspconfig.mappings.server")
 			registry = require("mason-registry")
+			mason_dap = require("mason-nvim-dap")
 
 			for mason_name, lsp_name in pairs(manual_link) do
 				mapping.package_to_lspconfig[mason_name] = lsp_name
@@ -152,6 +151,14 @@ return { ---@type LazyPluginSpec[]
 			mason_lsp.setup({
 				automatic_installation = true,
 				ensure_installed = {},
+			})
+
+			mason_dap.setup({
+				automatic_installation = true,
+				ensure_installed = {},
+				handlers = {
+					mason_dap.default_setup,
+				},
 			})
 
 			mason_lsp.setup_handlers({
@@ -171,7 +178,19 @@ return { ---@type LazyPluginSpec[]
 			-- Launch LSP immediately upon installation
 			registry:on(
 				"package:install:success",
-				vim.schedule_wrap(function(pkg)
+				vim.schedule_wrap(function(pkg) ---@param pkg Package
+					local is_lsp = false
+					for _, category in ipairs(pkg.spec.categories) do
+						if category == "LSP" then
+							is_lsp = true
+							break
+						end
+					end
+
+					if not is_lsp then
+						return
+					end
+
 					local lsp = nvim_lsp[mapping.package_to_lspconfig[pkg.name] or pkg.name]
 					lsp.setup({})
 					lsp.launch()
