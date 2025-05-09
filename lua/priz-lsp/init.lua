@@ -51,11 +51,30 @@ return { ---@type LazyPluginSpec[]
 					},
 				},
 			},
+
 			completion = {
 				documentation = {
 					auto_show = true,
+					auto_show_delay_ms = 150,
 					window = {
 						border = "padded",
+					},
+				},
+				ghost_text = {
+					enabled = false,
+					show_with_menu = false,
+				},
+				trigger = {
+					show_on_keyword = true,
+					show_on_trigger_character = true,
+					show_on_insert_on_trigger_character = true,
+					show_on_x_blocked_trigger_characters = {
+						"'",
+						'"',
+					},
+					show_on_blocked_trigger_characters = {
+						"\n",
+						"\t",
 					},
 				},
 				menu = {
@@ -78,7 +97,8 @@ return { ---@type LazyPluginSpec[]
 				preset = "none",
 				["<S-Up>"] = { "show", "select_prev", "fallback" },
 				["<S-Down>"] = { "show", "select_next", "fallback" },
-				["<F1>"] = { "show", "accept", "fallback" },
+				["<F1>"] = { "show", "cancel", "fallback" },
+				["<Tab>"] = { "select_and_accept", "fallback" },
 				["<F2>"] = { "show", "hide", "fallback" },
 			},
 		},

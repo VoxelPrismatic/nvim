@@ -29,19 +29,21 @@ function Scroll(n, dur, center)
 	local top_diff = math.abs(top_now - top_fin)
 	local cur_diff = math.abs(cur_now - cur_fin)
 
-	local screen = top_now >= top_fin and key_cb("<C-y>") or key_cb("<C-e>")
-	local arrow = cur_now >= cur_fin and key_cb("<Up>") or key_cb("<Down>")
-
-	for i = 1, cur_diff do
-		vim.defer_fn(arrow, i * dur / cur_diff)
+	---@param key string
+	---@param diff integer
+	local function go(key, diff)
+		local gap = dur / diff
+		local scale = 5
+		local cb = key_cb(scale .. key)
+		for i = 1, diff, scale do
+			vim.defer_fn(cb, i * gap)
+		end
 	end
 
-	if center == false then
-		return
-	end
+	go(cur_now >= cur_fin and "<Up>" or "<Down>", cur_diff)
 
-	for i = 1, top_diff do
-		vim.defer_fn(screen, i * dur / top_diff)
+	if center ~= false then
+		go(top_now >= top_fin and "<C-y>" or "<C-e>", top_diff)
 	end
 
 	if ret_i then
@@ -65,7 +67,7 @@ end
 vim.keymap.set({ "n", "v", "i" }, "<Home>", toggle_home, { noremap = true, silent = true })
 
 -- PageUp and PageDown will stay in the center of the screen
-local ani_time = 50
+local ani_time = 150
 vim.keymap.set({ "n", "v", "x", "i" }, "<PageUp>", function()
 	Scroll(-vim.fn.winheight(0) / 2, ani_time)
 end, { noremap = true, silent = true })
