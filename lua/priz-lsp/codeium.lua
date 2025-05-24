@@ -1,11 +1,10 @@
 return { ---@type LazyPluginSpec
 	"Exafunction/windsurf.nvim",
 	name = "codeium.nvim",
-	enabled = false,
-	disabled = true,
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 	},
+	enabled = false,
 	event = "InsertEnter",
 	config = true,
 	opts = {
