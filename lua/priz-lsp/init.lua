@@ -1,3 +1,5 @@
+local lazypath = vim.fn.stdpath("data") .. "/lazy/"
+
 vim.debug = {
 	nvim_win_get_all_options = function(winid)
 		---@type table<string, vim.api.keyset.get_option_info>
@@ -97,13 +99,18 @@ return { ---@type LazyPluginSpec[]
 				preset = "none",
 				["<S-Up>"] = { "show", "select_prev", "fallback" },
 				["<S-Down>"] = { "show", "select_next", "fallback" },
-				["<F1>"] = { "show", "cancel", "fallback" },
+				["<F1>"] = { "show", "select_and_accept", "fallback" },
 				["<Tab>"] = { "select_and_accept", "fallback" },
 				["<F2>"] = { "show", "hide", "fallback" },
 			},
 		},
 		config = function(config)
-			require("blink.cmp").setup(config.opts)
+			local opts = config.opts
+			while type(opts) == "function" do
+				opts = opts(config, {})
+			end
+
+			require("blink.cmp").setup(opts)
 			local palette = require("rose-pine.palette")
 			require("rabbit.term.highlight").apply({
 				BlinkCmpLabelDeprecated = {
@@ -133,10 +140,19 @@ return { ---@type LazyPluginSpec[]
 		ft = "lua",
 		config = true,
 		opts = { ---@type lazydev.Config
+			runtime = vim.env.VIMRUNTIME --[[@as string]],
+			integrations = {
+				lspconfig = true,
+				cmp = true,
+				coq = false,
+			},
 			library = {
 				{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
-				"LazyVim",
+				{ path = lazypath .. "lazy.nvim", words = { "LazyPlugin", "LazyPluginSpec" } },
+				{ path = lazypath .. "lazydev.nvim", words = { "lazydev" } },
 			},
+			enabled = true,
+			debug = false,
 		},
 	},
 	{
