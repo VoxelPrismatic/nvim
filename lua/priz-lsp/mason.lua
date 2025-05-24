@@ -43,16 +43,6 @@ vim.keymap.set("n", "<leader>lh", ToggleHarperLs, {
 	silent = true,
 })
 
--- Run updates on these packages
----@type table<string, string | false>
-local updateable = {
-	grammarly = false, -- Ignore Grammarly
-}
-
--- Do not bind multiple LSPs to the same filetype
----@type table<string, integer>
-local autocmds = {}
-
 -- Mason Lsp Config is not complete
 ---@type table<string, string>
 local manual_link = {
@@ -61,65 +51,191 @@ local manual_link = {
 
 local GENERIC_THRESHOLD = 8
 
-local nvim_lsp ---@type table<string, table>
-local mason_lsp
-local mapping ---@type { lspconfig_to_package: table<string, string>, package_to_lspconfig: table<string, string>}
-local registry ---@type MasonRegistry
-local mason_dap
+---@type { [string]: boolean }
+local handled = {
+	grammarly = true, -- Disable grammarly install
+}
 
----@param lsp_name string LSP name, as found in lspconfig
-local function bind_lsp(lsp_name)
-	---@type boolean | string | Package
-	local pkg = updateable[lsp_name]
-	if type(pkg) == "string" then
-		-- Auto-update
-		pkg = registry.get_package(pkg)
-		pkg:check_new_version(function(_ok, version)
-			if _ok and version.current_version ~= version.latest_version then
-				pkg:install()
+---@type { [string]: boolean }
+local deprecated = {
+	volar = true,
+}
+
+---@type { [string]: integer }
+local _bound = {}
+
+---@return boolean success
+local function launch_lsp(name, bufnr)
+	local active = vim.lsp.get_clients({ name = name })
+	if #active > 0 or _bound[name] ~= nil then
+		return true
+	end
+	vim.print("Launching " .. name)
+	local lsp = require("lspconfig")[name]
+	lsp.setup({})
+	_bound[name] = vim.lsp.start(lsp, {
+		bufnr = bufnr or 0,
+	})
+	return _bound[name] ~= nil
+end
+
+local handling_lsp
+vim.api.nvim_create_autocmd("LspAttach", {
+	callback = function(evt)
+		if handling_lsp then
+			return
+		end
+
+		handling_lsp = true
+		local lsps = {}
+		for _, lsp in ipairs(vim.lsp.get_clients()) do
+			if lsps[lsp.name] == nil then
+				lsps[lsp.name] = lsp
+				goto continue
 			end
-		end)
-		return
-	elseif pkg ~= nil then
-		return
+
+			-- Bind this buffer to the existing LSP instance
+			for bufid, attached in pairs(lsp.attached_buffers) do
+				if attached then
+					vim.lsp.buf_detach_client(bufid, lsp.id)
+				end
+				if not lsps[lsp.name].attached_buffers[evt.buf] then
+					vim.lsp.buf_attach_client(bufid, lsps[lsp.name].id)
+				end
+			end
+			lsp:stop(true)
+
+			::continue::
+		end
+		handling_lsp = false
+	end,
+})
+
+---@param evt vim.api.keyset.create_autocmd.callback_args
+---@param ft string
+local function bind_lsp(evt, ft)
+	local map = require("mason-lspconfig").get_mappings()
+	local mason = {
+		lsp = require("mason-lspconfig"),
+		dap = require("mason-nvim-dap"),
+		registry = require("mason-registry"),
+		main = require("mason"),
+	}
+	for mason_name, lsp_name in pairs(manual_link) do
+		map.lspconfig_to_package[lsp_name] = mason_name
+		map.package_to_lspconfig[mason_name] = lsp_name
 	end
 
-	local lsp = nvim_lsp[lsp_name]
-	local fts = lsp.config_def ~= nil and lsp.config_def.default_config.filetypes or {}
-	-- Generic LSP like harper_ls, not specific to language
-	if #fts > GENERIC_THRESHOLD or #fts == 0 then
-		return
+	---@type { [string]: true }
+	local installed = {}
+	for _, name in ipairs(mason.lsp.get_installed_servers()) do
+		installed[name] = true
 	end
 
-	local mason_name = mapping.lspconfig_to_package[lsp_name] or lsp_name
-	pkg = registry.get_package(mason_name)
-	-- Generic LSP like harper_ls, not specific to language
-	if #pkg.spec.languages > GENERIC_THRESHOLD then
-		return
+	---@param tries string[]
+	---@return vim.lsp.Config? config
+	---@return string lsp_name
+	local matches_ft = function(tries)
+		for _, lsp_name in ipairs(tries) do
+			local config = vim.lsp.config[lsp_name] or {}
+			for _, t in ipairs(config.filetypes or {}) do
+				if t == ft then
+					return config, lsp_name
+				end
+			end
+		end
+		return nil, ""
 	end
 
-	local buf_fts = {}
-	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-		table.insert(buf_fts, vim.bo[bufnr].filetype)
-	end
+	local pkgs = {} ---@type Package[]
+	local found = false
 
-	-- Install the first LSP for each filetype
-	for _, ft in ipairs(fts) do
-		if autocmds[ft] ~= nil then
-			-- pass
-		elseif vim.tbl_contains(buf_fts, ft) then
-			pkg:install()
-		else
-			autocmds[ft] = vim.api.nvim_create_autocmd("FileType", {
-				pattern = ft,
-				callback = function()
-					pkg:install()
-				end,
-				once = true,
+	---@param pkg Package
+	local update_pkg = function(pkg)
+		local current = pkg:get_installed_version()
+		local latest = pkg:get_latest_version()
+
+		local name = map.package_to_lspconfig[pkg.name]
+
+		if current == nil then
+			table.insert(pkgs, pkg)
+		elseif current ~= latest then
+			pkg:install({
+				force = false,
+				strict = false,
+				version = latest,
 			})
+		else
+			found = launch_lsp(name) or found
 		end
 	end
+
+	for name, _ in pairs(map.lspconfig_to_package) do
+		if deprecated[name] then
+			goto continue
+		end
+
+		local tries = {
+			map.package_to_lspconfig[name] or name,
+			name,
+		}
+
+		local config, lsp_name = matches_ft(tries)
+
+		if config == nil then
+			goto continue
+		end
+
+		local binaries = config.cmd
+		if type(binaries) == "table" and vim.fn.executable(binaries[1]) == 1 then
+			launch_lsp(lsp_name, evt.buf)
+		end
+
+		local fts = config.filetypes or {}
+		if #fts >= GENERIC_THRESHOLD or map.lspconfig_to_package[name] == nil then
+			goto continue
+		end
+
+		local ok, pkg = pcall(mason.registry.get_package, map.lspconfig_to_package[name])
+		if not ok then
+			-- pass
+		elseif installed[name] then
+			update_pkg(pkg)
+		else
+			table.insert(pkgs, pkg)
+		end
+		::continue::
+	end
+
+	if found then
+		return
+	end
+
+	local pkg = table.remove(pkgs, 1) ---@type Package?
+	if pkg == nil then
+		vim.print("No LSP available for filetype `" .. ft .. "'")
+		return
+	end
+
+	vim.print("Installing LSP `" .. pkg.name .. "' for filetype `" .. ft .. "'")
+	pkg:install()
 end
+
+vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufRead" }, {
+	pattern = { "*" },
+	callback = function(evt)
+		local ft = vim.bo[evt.buf or 0].filetype
+		if ft == nil or ft == "" or handled[ft] then
+			return
+		end
+
+		handled[ft] = true
+
+		vim.defer_fn(function()
+			bind_lsp(evt, ft)
+		end, 50)
+	end,
+})
 
 return { ---@type LazyPluginSpec[]
 	{
@@ -137,43 +253,13 @@ return { ---@type LazyPluginSpec[]
 					upgrade_pip = true,
 				},
 			})
-			nvim_lsp = require("lspconfig")
-			mason_lsp = require("mason-lspconfig")
-			mapping = require("mason-lspconfig.mappings.server")
-			registry = require("mason-registry")
-			mason_dap = require("mason-nvim-dap")
+			local registry = require("mason-registry")
 
+			local mapping = require("mason-lspconfig").get_mappings()
 			for mason_name, lsp_name in pairs(manual_link) do
 				mapping.package_to_lspconfig[mason_name] = lsp_name
 				mapping.lspconfig_to_package[lsp_name] = mason_name
 			end
-
-			mason_lsp.setup({
-				automatic_installation = true,
-				ensure_installed = {},
-			})
-
-			mason_dap.setup({
-				automatic_installation = true,
-				ensure_installed = {},
-				handlers = {
-					mason_dap.default_setup,
-				},
-			})
-
-			mason_lsp.setup_handlers({
-				function(lsp_name)
-					local lsp = nvim_lsp[lsp_name]
-					updateable[lsp_name] = mapping.lspconfig_to_package[lsp_name] or lsp_name
-					lsp.setup({})
-					local fts = lsp.config_def ~= nil and lsp.config_def.default_config.filetypes or {}
-					if #fts < GENERIC_THRESHOLD then
-						for _, ft in ipairs(fts) do
-							autocmds[ft] = 0
-						end
-					end
-				end,
-			})
 
 			-- Launch LSP immediately upon installation
 			registry:on(
@@ -187,24 +273,21 @@ return { ---@type LazyPluginSpec[]
 						end
 					end
 
-					if not is_lsp then
-						return
+					if is_lsp then
+						launch_lsp(mapping.package_to_lspconfig[pkg.name] or pkg.name)
 					end
-
-					local lsp = nvim_lsp[mapping.package_to_lspconfig[pkg.name] or pkg.name]
-					lsp.setup({})
-					lsp.launch()
 				end)
 			)
 
-			registry.update(vim.schedule_wrap(function(ok, msg)
-				if not ok then
-					error(msg)
-				end
-				for _, lsp_name in ipairs(mason_lsp.get_available_servers()) do
-					bind_lsp(lsp_name)
-				end
-			end))
+			local mason_dap = require("mason-nvim-dap")
+
+			mason_dap.setup({
+				automatic_installation = true,
+				ensure_installed = {},
+				handlers = {
+					mason_dap.default_setup,
+				},
+			})
 		end,
 	},
 }
