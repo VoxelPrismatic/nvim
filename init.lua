@@ -42,3 +42,4 @@ require("lazy").setup({
 
 -- Use system clipboard
 vim.opt.clipboard = "unnamedplus"
+vim.fn.delete(vim.lsp.log.get_filename())
