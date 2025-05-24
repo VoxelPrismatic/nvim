@@ -224,6 +224,13 @@ end
 vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufRead" }, {
 	pattern = { "*" },
 	callback = function(evt)
+		if evt.event == "FileType" then
+			local ok = pcall(vim.treesitter.start)
+			if ok then
+				vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+				vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+			end
+		end
 		local ft = vim.bo[evt.buf or 0].filetype
 		if ft == nil or ft == "" or handled[ft] then
 			return

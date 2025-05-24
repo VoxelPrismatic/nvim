@@ -8,6 +8,7 @@ local formatters = {
 	-- c = exe.clang_format,
 	java = exe.clang_format,
 	markdown = exe.prettier,
+	html = exe.prettier,
 	lua = exe.stylua,
 }
 
