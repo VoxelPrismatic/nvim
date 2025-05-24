@@ -1,9 +1,8 @@
 return {
 	"m4xshen/hardtime.nvim",
-	enabled = false,
 	dependencies = {
 		"MunifTanjim/nui.nvim",
-		"nvim-lua/plenary.nvim"
+		"nvim-lua/plenary.nvim",
 	},
 	opts = {
 		disable_mouse = false,
@@ -14,10 +13,10 @@ return {
 			["<Right>"] = { "", "i" },
 		},
 		disabled_keys = {
-			["<Up>"] = { },
-			["<Down>"] = { },
-			["<Left>"] = { },
-			["<Right>"] = { },
+			["<Up>"] = {},
+			["<Down>"] = {},
+			["<Left>"] = {},
+			["<Right>"] = {},
 		},
 		disabled_filetypes = {
 			"qf",
@@ -25,7 +24,7 @@ return {
 			"NvimTree",
 			"lazy",
 			"mason",
-			"oil"
+			"oil",
 		},
-	}
+	},
 }
