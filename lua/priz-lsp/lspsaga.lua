@@ -43,7 +43,7 @@ return { ---@type LazyPluginSpec
 	keys = {
 		{
 			"<leader>?",
-			"<cmd>Lspsaga hover_doc<CR>",
+			"<cmd>lua vim.lsp.buf.hover({border='rounded'})<CR>",
 			desc = "Get inline documentation",
 		},
 		{

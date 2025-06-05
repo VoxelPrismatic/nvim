@@ -26,7 +26,7 @@ local function wrap_pairs(lhs, rhs)
 			vim.api.nvim_buf_set_lines(0, fin.line - 1, fin.line, false, { new_end_line })
 			vim.fn.setpos("'<", { 0, start.line, start.col + 1 })
 		end
-		vim.fn.feedkeys("gv h")
+		vim.fn.feedkeys("gv h", "n")
 	end, 5)
 end
 

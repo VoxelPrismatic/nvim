@@ -14,7 +14,7 @@ vim.opt.expandtab = false -- Use tabs instead of spaces
 
 vim.opt.listchars = {
 	trail = "·", -- Trailing spaces
-	tab = ">\u{2014} ", -- Tabs
+	tab = "│─┄", -- Tabs
 }
 
 -- Install lazy.nvim

@@ -47,11 +47,10 @@ return { ---@type LazyPluginSpec[]
 
 	{
 		"nvim-treesitter/nvim-treesitter",
-		event = "LspAttach",
+		dir = "/home/priz/Desktop/git/nvim-treesitter/",
 		build = ":TSUpdate",
 		lazy = false,
 		branch = "main",
-		config = true,
 		opts = { ---@type TSConfig
 			auto_install = true,
 			sync_install = false,
@@ -64,6 +63,17 @@ return { ---@type LazyPluginSpec[]
 			},
 			ignore_install = {},
 			modules = {},
+			highlight = {
+				enable = true,
+			},
 		},
+		config = function(spec)
+			require("nvim-treesitter").setup(spec.opts)
+			vim.treesitter.language.register("b", { "b" })
+			vim.treesitter.language.add("b", {
+				path = "/home/priz/Desktop/git/tree-sitter-b/libtree-sitter-b.so",
+			})
+			vim.filetype.add({ extension = { b = "b" } })
+		end,
 	},
 }
