@@ -97,7 +97,7 @@ function HlLeftmostIndent()
 	local seq = (nextline - prevline) >= 2 and { "🯔", "🯕", "🯖", "🯗" } or { "⸾" }
 	for i = prevline, nextline do
 		pcall(vim.api.nvim_buf_set_extmark, 0, ns, i - 1, len - 1, {
-			virt_text = { { seq[(i - curline - 1) % #seq + 1], { "Special", i == curline and "CursorLine" or nil } } },
+			virt_text = { { seq[i % #seq + 1], { "Special", i == curline and "CursorLine" or nil } } },
 			virt_text_pos = "overlay",
 			priority = 1,
 		})

@@ -221,16 +221,38 @@ local function bind_lsp(evt, ft)
 	pkg:install()
 end
 
+local function launchTS()
+	local ok = pcall(vim.treesitter.start)
+	if ok then
+		vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+		vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+	end
+end
+
+local function installTS(ft)
+	local TS = require("nvim-treesitter")
+	local installed = false
+	for _, k in ipairs(TS.get_installed()) do
+		if k == ft then
+			installed = true
+			break
+		end
+	end
+	if not installed then
+		local ret = TS.install(ft) ---@type async.Task
+		ret:await(launchTS)
+	else
+		launchTS()
+	end
+end
+
 vim.api.nvim_create_autocmd({ "FileType", "BufEnter", "BufRead" }, {
 	pattern = { "*" },
 	callback = function(evt)
 		if evt.event == "FileType" then
-			local ok = pcall(vim.treesitter.start)
-			if ok then
-				vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-				vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-			end
+			installTS(vim.bo[evt.buf].filetype)
 		end
+
 		local ft = vim.bo[evt.buf or 0].filetype
 		if ft == nil or ft == "" or handled[ft] then
 			return

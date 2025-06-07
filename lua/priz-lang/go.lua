@@ -20,6 +20,7 @@ vim.filetype.add({
 })
 
 return {
+	enabled = false,
 	"ray-x/go.nvim",
 	dependencies = { -- optional packages
 		"ray-x/guihua.lua",

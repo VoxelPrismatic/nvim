@@ -47,7 +47,7 @@ return { ---@type LazyPluginSpec[]
 
 	{
 		"nvim-treesitter/nvim-treesitter",
-		dir = "/home/priz/Desktop/git/nvim-treesitter/",
+		-- dir = "/home/priz/Desktop/git/nvim-treesitter/",
 		build = ":TSUpdate",
 		lazy = false,
 		branch = "main",
