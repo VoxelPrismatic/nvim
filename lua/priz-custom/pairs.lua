@@ -37,31 +37,25 @@ local function bind(...)
 	end
 end
 
-local pair_key = "S"
+local pair_key = "."
 
-vim.keymap.set("v", pair_key .. "(", bind("(", ")"), {
-	desc = "Wrap () around selection",
-})
-vim.keymap.set("v", pair_key .. "[", bind("[", "]"), {
-	desc = "Wrap [] around selection",
-})
-vim.keymap.set("v", pair_key .. "{", bind("{", "}"), {
-	desc = "Wrap {} around selection",
-})
-vim.keymap.set("v", pair_key .. "<", bind("<", ">"), {
-	desc = "Wrap <> around selection",
-})
-vim.keymap.set("v", pair_key .. '"', bind('"', '"'), {
-	desc = 'Wrap "" around selection',
-})
-vim.keymap.set("v", pair_key .. "'", bind("'", "'"), {
-	desc = "Wrap '' around selection",
-})
-vim.keymap.set("v", pair_key .. "`", bind("`", "`"), {
-	desc = "Wrap `` around selection",
-})
-vim.keymap.set("v", pair_key .. "~", bind("`", "'"), {
-	desc = "Wrap `' around selection",
-})
+local pair_wraps = {
+	-- motion = lhs, rhs
+	["("] = { "(", ")" },
+	["["] = { "[", "]" },
+	["{"] = { "{", "}" },
+	["<"] = { "<", ">" },
+	['"'] = { '"', '"' },
+	["'"] = { "'", "'" },
+	["`"] = { "`", "`" },
+	["~"] = { "`", "'" },
+}
+
+for motion, pair in pairs(pair_wraps) do
+	local lhs, rhs = unpack(pair)
+	vim.keymap.set("v", pair_key .. motion, bind(lhs, rhs), {
+		desc = "Wrap " .. lhs .. rhs .. " around selection",
+	})
+end
 
 return {}
