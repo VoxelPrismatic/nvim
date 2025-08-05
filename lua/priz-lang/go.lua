@@ -1,8 +1,8 @@
 local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
-vim.api.nvim_create_autocmd("BufWritePre", {
+vim.api.nvim_create_autocmd("BufWritePost", {
 	pattern = "*.go",
 	callback = function()
-		require("go.format").goimports()
+		vim.cmd("silent! !goimports -w %")
 		for _, client in pairs(vim.lsp.get_clients()) do
 			if client.name == "templ" then
 				vim.cmd("silent! LspRefresh templ")

@@ -3,6 +3,7 @@ local bg_timer = vim.uv.new_timer()
 local function toggle_background(set, timer)
 	assert(bg_timer ~= nil, "timer is broken")
 
+	vim.cmd("hi NormalNC guibg=none")
 	local hl = vim.api.nvim_get_hl(0, { name = "Normal" }) --[[@as vim.api.keyset.highlight]]
 	if set == false or (set == nil and hl.bg ~= nil) then
 		vim.print("")
@@ -30,6 +31,7 @@ local sakura_conf = { ---@type LazyPluginSpec
 	lazy = false,
 	opts = { ---@type RosePine.Options
 		swatch = "sakura",
+		dim_inactive_windows = false,
 		highlight_groups = {
 			IndentLine = { fg = "highlight_high" },
 			IndentLineCurrent = { fg = "iris" },
@@ -69,11 +71,12 @@ local sakura_conf = { ---@type LazyPluginSpec
 			desc = "Enable background",
 		},
 	},
-	config = function(_, opts)
-		require("rose-pine").setup(opts)
+	config = function(self)
+		require("rose-pine").setup(self.opts)
 		vim.cmd("colorscheme rose-pine-dawn")
 		toggle_background()
 		toggle_background(nil, 250)
+		vim.cmd("hi NormalNC guibg=none")
 	end,
 }
 

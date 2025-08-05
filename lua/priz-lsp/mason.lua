@@ -49,6 +49,12 @@ local manual_link = {
 	["c3-lsp"] = "c3_lsp",
 }
 
+-- Other LSPs
+---@type table<string, string[]>
+local more_lsps = {
+	qmlls = { "qmlls", "-E" },
+}
+
 local GENERIC_THRESHOLD = 8
 
 ---@type { [string]: boolean }
@@ -277,6 +283,10 @@ return { ---@type LazyPluginSpec[]
 		},
 		lazy = false,
 		config = function(_)
+			for lsp, cmd in pairs(more_lsps) do
+				require("lspconfig")[lsp].setup({ cmd = cmd })
+			end
+
 			require("mason").setup({
 				pip = {
 					upgrade_pip = true,

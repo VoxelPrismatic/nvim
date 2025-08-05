@@ -1,14 +1,17 @@
 local function perform_comment(start, end_)
-	local str = vim.bo.commentstring:gsub("%%s", "")
-	if str == "" then
+	local trimstr = vim.bo.commentstring:gsub("%%s", "")
+	if trimstr == "" then
 		vim.notify("No comment string for `" .. vim.bo.filetype .. "'", vim.log.levels.ERROR)
 		return
 	end
 
+	local str = trimstr:gsub("^%s*(.*)%s+$", "%1")
+	vim.print(">" .. str .. "<")
+
 	local all_commented = true
 	local lines = vim.api.nvim_buf_get_lines(0, start - 1, end_, false)
 	for _, line in ipairs(lines) do
-		if line:gsub("^%s+", ""):find(str) ~= 1 then
+		if line:gsub("^%s+", ""):find(str, 1, true) ~= 1 then
 			all_commented = false
 			break
 		end
@@ -18,10 +21,9 @@ local function perform_comment(start, end_)
 		local head, tail = line:match("^(%s*)(.*)")
 
 		if all_commented then
-			tail = string.sub(tail, #str + 1)
-			lines[i] = head .. tail
+			lines[i] = head .. tail:sub(#((tail:find(trimstr) == 1) and trimstr or str) + 1)
 		else
-			lines[i] = head .. str .. tail
+			lines[i] = head .. trimstr .. tail
 		end
 	end
 
